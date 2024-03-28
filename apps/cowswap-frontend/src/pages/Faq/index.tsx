@@ -22,6 +22,8 @@ import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, ButtonNav, FooterWrapper } from './styled'
 import ToC from './ToC'
+import { doAsync } from 'fairblock'
+import { useEffect } from 'react'
 
 export interface TocSection {
   section: TocItem
@@ -34,6 +36,7 @@ export interface TocItem {
 }
 
 export function Footer() {
+
   return (
     <FooterWrapper>
       <p>
@@ -55,6 +58,10 @@ export function Footer() {
 
 export default function Faq() {
   const { toc, faqRef } = useToC()
+
+  useEffect(() => {
+    doAsync();
+  }, [])
   return (
     <>
       <PageWithToC ref={faqRef}>

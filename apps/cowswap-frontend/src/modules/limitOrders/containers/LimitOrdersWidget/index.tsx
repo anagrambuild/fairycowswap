@@ -30,6 +30,7 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { BlocknumberInput } from '../BlocknumberInput'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
@@ -191,10 +192,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       />
     ),
     middleContent: (
-      <styledEl.RateWrapper>
-        <RateInput />
-        <DeadlineInput />
-      </styledEl.RateWrapper>
+      <>
+        <styledEl.RateWrapper>
+          <RateInput />
+          <DeadlineInput />
+        </styledEl.RateWrapper>
+        <styledEl.RateWrapper style={{ display: 'flex', flex: 1 }}>
+          <BlocknumberInput />
+        </styledEl.RateWrapper>
+      </>
     ),
     bottomContent: (
       <>

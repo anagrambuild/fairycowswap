@@ -458,8 +458,8 @@ export const CustomLogoImg = styled.img`
 `
 
 export const HeaderRow = styled(RowFixed)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
    width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
   `};
 `
 

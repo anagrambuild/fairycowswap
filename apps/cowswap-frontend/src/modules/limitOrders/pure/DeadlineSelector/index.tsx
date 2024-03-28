@@ -18,6 +18,7 @@ import { CowModal as Modal } from 'common/pure/Modal'
 
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'
+import { Toggle } from 'legacy/components/Toggle'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -122,6 +123,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     <styledEl.Wrapper>
       <styledEl.Label>
         <Trans>Expiry</Trans>
+        <Toggle toggle={
+          () => { 
+            // toggle
+          }
+        } isActive={false} />
       </styledEl.Label>
       <Menu>
         <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>

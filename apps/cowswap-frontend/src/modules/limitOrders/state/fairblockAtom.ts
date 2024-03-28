@@ -1,0 +1,21 @@
+import { atom } from 'jotai'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+
+export interface FairblockState {
+  readonly isLoading: boolean
+  readonly currentBlockHeight: number | null
+  readonly targetBlockHeightTyped: string | null
+  readonly targetBlockHeightDisplayed: number | null
+}
+
+export const initFairblockState = () => ({
+  currentBlockHeight: null,
+  targetBlockHeightTyped: null,
+  targetBlockHeightDisplayed: null,
+  isLoading: false,
+
+})
+
+export const { atom: fairblockAtom, updateAtom: updateFairblockAtom } = atomWithPartialUpdate(
+  atom<FairblockState>(initFairblockState())
+)
