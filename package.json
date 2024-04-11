@@ -281,7 +281,7 @@
     "jsdom": "~22.1.0",
     "node-stdlib-browser": "^1.2.0",
     "nx": "16.4.0",
-    "nx-cloud": "latest",
+    "nx-cloud": "^16.1.1",
     "patch-package": "^8.0.0",
     "prettier": "^2.6.2",
     "react-cosmos": "^6.0.0-beta.6",

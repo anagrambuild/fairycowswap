@@ -1,10 +1,11 @@
 import { proxyActivities } from "@temporalio/workflow";
-import type { createRebalanceActivitiesWithDependencies } from "./activities";
+import type { createFairyringCowswapActivitiesWithDependencies } from "./activities";
+import { groupBy } from "lodash";
 
 const activityInitialRetryInterval = 1000;
 // Instantiate the activities
 const { pullAllCowswapOrdersForBlocks, postCowSwapOrdersToOrderbook } =
-  proxyActivities<ReturnType<typeof createRebalanceActivitiesWithDependencies>>(
+  proxyActivities<ReturnType<typeof createFairyringCowswapActivitiesWithDependencies>>(
     {
       startToCloseTimeout: "1 hour",
       heartbeatTimeout: "2 minutes",
@@ -25,7 +26,9 @@ export const syncFairyringCowswapOrders = async (
 ) => {
   console.log("temporal worker: syncFairyringCowswapOrders [start]");
   const cowswapOrders = await pullAllCowswapOrdersForBlocks();
-  const ordersPostJobResult = await postCowSwapOrdersToOrderbook(cowswapOrders)
+
+  // const cowswapOrdersByChain = groupBy(cowswapOrders?.orders, o => o.)
+  const ordersPostJobResult = await postCowSwapOrdersToOrderbook(cowswapOrders, sepolia.id)
   console.log("temporal worker: syncFairyringCowswapOrders[end]");
   return {
     success: true,

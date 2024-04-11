@@ -19,11 +19,8 @@ export const createFairyringCowswapActivitiesWithDependencies = (db: AppDb) => (
   async pullAllCowswapOrdersForBlocks(
     toBlockNumber: string = 'latest',
     fromBlockNumber: string = 'last-indexed'
-    // getContextFn: () => Promise<Context> = async () => Context.current()
   ) {
     console.log(`Running pullAllCowswapOrdersForBlocks`)
-    // get wallet + pk...
-    // const vaultId = "";
     const _watcherData = await db
       .select()
       .from(appDbSchema.fairyringWatcher)
@@ -31,7 +28,6 @@ export const createFairyringCowswapActivitiesWithDependencies = (db: AppDb) => (
       .limit(1)
     const watcherData = first(_watcherData)
     if (!watcherData) {
-      // not sure how to handle errors in temporal yet...
       console.error('No watcherData found for testnet')
       return
     }

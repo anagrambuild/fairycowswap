@@ -1,19 +1,19 @@
-const encryptSignedTxForFairyring = (
-    targetBlockHeight: string,
-    publicKey: string,
-    plainText: string,
-) => {
+import { timelockEncrypt } from 'ts-ibe'
 
-    const { spawnSync } = require( 'child_process' );
-    const ls = spawnSync( './binaries/encrypter', [ targetBlockHeight, publicKey, plainText ] );
-    
-    console.log( `stderr: ${ ls.stderr.toString() }` );
-    console.log( `stdout: ${ ls.stdout.toString() }` );
+const encryptSignedTxForFairyring = async (targetBlockHeight: string, publicKey: string, plainText: string) => {
+  const s = await timelockEncrypt(
+    targetBlockHeight,
+    publicKey,
+    new TextEncoder().encode(plainText)
+  )
+  return s
 
-    const maybeEncryptedResult: string = ls.stdout.toString()
-    return maybeEncryptedResult.trim();
+//   const { spawnSync } = require('child_process')
+//   const ls = spawnSync('./binaries/encrypter', [targetBlockHeight, publicKey, plainText])
+//   console.log(`stderr: ${ls.stderr.toString()}`)
+//   console.log(`stdout: ${ls.stdout.toString()}`)
+//   const maybeEncryptedResult: string = ls.stdout.toString()
+//   return maybeEncryptedResult.trim()
 }
 
-export {
-    encryptSignedTxForFairyring,
-}
+export { encryptSignedTxForFairyring }

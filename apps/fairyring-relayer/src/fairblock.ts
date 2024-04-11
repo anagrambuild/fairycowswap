@@ -84,7 +84,6 @@ export const cowswapOrderToSignedBankMsgSend = async (order: OrderCreation) => {
   })
 
   const pepNonce = await fairblockClient.FairyringPep.query.queryPepNonce(fromWalletAddress)
-  console.log('pepNonce', pepNonce)
 
   const signedMsg = await signer.sign(
     fromWalletAddress!,
@@ -121,23 +120,20 @@ export const encryptSignedTx = async (serializedSignedMessage: string) => {
 
   const lastestBlockHeight = latestHeightResult.data.height
 
-  console.log('lastestBlockHeight', lastestBlockHeight)
-
   const targetBlockHeight = parseInt(lastestBlockHeight!, 10) + 3
 
-  const encryptedData = encryptSignedTxForFairyring(
+  let encryptedData = await encryptSignedTxForFairyring(
     targetBlockHeight.toString(),
     activePubKey?.publicKey!,
     serializedSignedMessage
-  ).trim()
-
-  console.log('encryptedData', `~${encryptedData}~`)
+  )
+  encryptedData = encryptedData.trim()
 
   const encryptTxSubmitData = await fairblockClient.FairyringPep.tx.msgSubmitEncryptedTx({
     value: {
       creator: serializedSignedMessage,
       data: encryptedData,
-      targetBlockHeight: targetBlockHeight + 1,
+      targetBlockHeight,
     },
   })
 

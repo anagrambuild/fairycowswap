@@ -123,11 +123,6 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     <styledEl.Wrapper>
       <styledEl.Label>
         <Trans>Expiry</Trans>
-        <Toggle toggle={
-          () => { 
-            // toggle
-          }
-        } isActive={false} />
       </styledEl.Label>
       <Menu>
         <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>

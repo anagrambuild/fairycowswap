@@ -20677,7 +20677,7 @@ nwsapi@^2.2.0, nwsapi@^2.2.2, nwsapi@^2.2.4:
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.7.tgz#738e0707d3128cb750dddcfe90e4610482df0f30"
   integrity sha512-ub5E4+FBPKwAZx0UwIQOjYWGHTEq5sPqHQNRN8Z9e4A7u3Tj1weLJsL59yH9vmvqEtBHaOmT6cYQKIZOxp35FQ==
 
-nx-cloud@16.1.1, nx-cloud@latest:
+nx-cloud@16.1.1, nx-cloud@^16.1.1:
   version "16.1.1"
   resolved "https://registry.yarnpkg.com/nx-cloud/-/nx-cloud-16.1.1.tgz#103ae0f13f5eb05d6ddd6d9bfcafc56cf295a59a"
   integrity sha512-Rq7ynvkYzAJ67N3pDqU6cMqwvWP7WXJGP4EFjLxgUrRHNCccqDPggeAqePodfk3nZEUrZB8F5QBKZuuw1DR3oA==

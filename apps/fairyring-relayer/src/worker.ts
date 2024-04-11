@@ -55,7 +55,7 @@ async function run(): Promise<void> {
     namespace,
     activities,
     ...workflowOption(),
-    taskQueue: TEMPORAL_REBALANCE_SCHEDULE_TASK_QUEUE_ID,
+    taskQueue: 'post-decrypted-orders-to-cowswap',
   });
   console.log("Worker connection successfully established");
 
