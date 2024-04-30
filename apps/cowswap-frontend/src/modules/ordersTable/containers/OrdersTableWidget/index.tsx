@@ -79,6 +79,9 @@ export function OrdersTableWidget({
   const isSafeViaWc = useIsSafeViaWc()
   const ordersPermitStatus = useGetOrdersPermitStatus()
 
+  console.log('allOrders:a', allOrders)
+  console.log('ordersList:a', ordersList)
+
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
 

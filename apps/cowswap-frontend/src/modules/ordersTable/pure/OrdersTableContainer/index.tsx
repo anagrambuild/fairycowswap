@@ -192,6 +192,7 @@ export function OrdersTableContainer({
   pendingActivities,
   ordersPermitStatus,
 }: OrdersProps) {
+  console.log('orders!', orders)
   const content = () => {
     if (!isWalletConnected) {
       return (

@@ -2,6 +2,7 @@
   "name": "fairyring-relayer",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "tsc --build",
     "build.watch": "tsc --build --watch",
@@ -9,14 +10,18 @@
     "lint": "eslint .",
     "start": "pnpm build:workflow; ts-node src/worker.ts",
     "start.watch": "nodemon worker.ts",
-    "dev": "nodemon src/worker.ts",
+    "dev": "nodemon src/server",
+    "dev2": "ts-node src/server",
+    "dev3": "ts-node --compiler-options '{\"module\": \"commonjs\"}' src/server.ts",
     "test:rebalance": "pnpm build:workflow; ts-node src/test-rebalance-workflow.ts",
     "schedule.start": "ts-node start-schedule.ts",
     "schedule.go-faster": "ts-node go-faster.ts",
     "schedule.pause": "ts-node pause-schedule.ts",
     "schedule.unpause": "ts-node unpause-schedule.ts",
     "schedule.delete": "ts-node delete-schedule.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "start:v12": "node --experimental-modules --es-module-specifier-resolution=node --experimental-json-modules ./bin/www",
+    "start:v13": "node --es-module-specifier-resolution=node --experimental-json-modules ./bin/www"
   },
   "nodemonConfig": {
     "execMap": {
@@ -48,12 +53,14 @@
     "@zerodev/ecdsa-validator": "^5.1.0",
     "@zerodev/sdk": "^5.1.13",
     "@zerodev/session-key": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "cosmjs-types": "^0.9.0",
     "decimal.js": "^10.4.3",
     "decimal.js-light": "^2.5.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.4",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "fairyring-client-ts": "^1.2.25",
     "fs-extra": "^11.2.0",
     "graphql-request": "^6.1.0",
@@ -72,6 +79,7 @@
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.0",
+    "@types/cors": "^2.8.17",
     "@types/fs-extra": "^11.0.4",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.17.0",
@@ -84,6 +92,7 @@
     "nodemon": "^2.0.12",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.3",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0"
   }

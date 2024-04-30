@@ -49,6 +49,7 @@ export interface BaseOrder extends OrderCreation {
   isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
+  encryptedBlock?: number // Block number when the order will decrypt
 
   // EthFlow
   orderCreationHash?: string
@@ -138,6 +139,7 @@ export interface AddPendingOrderParams {
   chainId: ChainId
   order: SerializedOrder
   isSafeWallet: boolean
+  encryptedBlock?: number
 }
 export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
