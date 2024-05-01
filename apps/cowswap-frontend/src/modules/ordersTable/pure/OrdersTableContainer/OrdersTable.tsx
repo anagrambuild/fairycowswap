@@ -398,6 +398,9 @@ export function OrdersTable({
 
           <Rows>
             {ordersPage.map((item) => {
+              console.log('item:', item)
+              const order = getParsedOrderFromTableItem(item)
+              console.log('order', order)
               const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
               const spotPrice = getSpotPrice({
                 chainId: chainId as SupportedChainId,
@@ -414,6 +417,7 @@ export function OrdersTable({
 
                 return (
                   <OrderRow
+                  encryptedBlock={(item as any).encryptedBlock}
                     key={order.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[order.id]}

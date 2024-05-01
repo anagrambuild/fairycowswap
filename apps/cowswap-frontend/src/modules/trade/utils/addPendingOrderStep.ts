@@ -16,5 +16,6 @@ export function addPendingOrderStep(addOrderParams: AddUnserialisedPendingOrderP
     ...addOrderParams,
     order,
   }
+  debugger;
   dispatch(addPendingOrder(params))
 }

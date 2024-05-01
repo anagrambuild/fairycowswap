@@ -216,6 +216,7 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
 export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const { chainId, account, signer, allowsOffchainSigning, appData, isSafeWallet } = params
 
+  // debugger;
   // Prepare order
   const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
   const receiver = unsignedOrder.receiver
@@ -237,20 +238,47 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   return await wrapErrorInOperatorError(async () => {
     // Call API
-    const orderId = await orderBookApi.sendOrder(
-      {
-        ...unsignedOrder,
-        from: account,
-        receiver,
-        signingScheme,
-        // Include the signature
-        signature,
-        quoteId,
-        appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-        appDataHash: appData.appDataKeccak256,
+
+    const payload = {
+      ...unsignedOrder,
+      from: account,
+      receiver,
+      signingScheme,
+      // Include the signature
+      signature,
+      quoteId,
+      appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
+      appDataHash: appData.appDataKeccak256,
+    }
+
+    const apiContext = { chainId }
+
+    const fairySwapApiRootUrl = 'http://localhost:3001';
+
+    const submitBackendRes = await fetch(`${fairySwapApiRootUrl}/api/submit-order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      { chainId }
-    )
+      body: JSON.stringify({
+        payload: payload,
+        apiContext: apiContext,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+
+
+
+      console.log(submitBackendRes)
+
+      const orderId = submitBackendRes.orderId
+
+    // const orderId = await orderBookApi.sendOrder(payload, apiContext)
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,

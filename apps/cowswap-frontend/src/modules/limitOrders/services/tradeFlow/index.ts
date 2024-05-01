@@ -94,9 +94,11 @@ export async function tradeFlow(
         chainId: chainId,
         order: {
           ...order,
+          encryptedBlock: 2,
           isHidden: !allowsOffchainSigning,
         },
         isSafeWallet,
+        encryptedBlock: 3,
       },
       dispatch
     )

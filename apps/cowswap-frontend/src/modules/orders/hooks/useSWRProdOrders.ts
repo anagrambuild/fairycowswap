@@ -32,6 +32,7 @@ export function useSWRProdOrders(): EnrichedOrder[] {
   )
 
   return useMemo(() => {
+    console.log('isBarnBackendEnv', isBarnBackendEnv)
     return isBarnBackendEnv ? loadedProdOrders : apiOrders
   }, [apiOrders, loadedProdOrders])
 }

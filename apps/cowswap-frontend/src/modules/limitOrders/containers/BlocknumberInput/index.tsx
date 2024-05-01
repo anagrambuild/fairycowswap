@@ -1,12 +1,17 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { HeadingText } from 'modules/limitOrders/pure/BlocknumberInput/HeadingText'
-import * as styledEl from './styled'
 import { fairblockAtom, updateFairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
+
+import * as styledEl from './styled'
 
 export function BlocknumberInput() {
   const { chainId } = useWalletInfo()
+
+
   // Rate state
   const { currentBlockHeight, isLoading, targetBlockHeightDisplayed, targetBlockHeightTyped } =
     useAtomValue(fairblockAtom)
@@ -43,8 +48,18 @@ export function BlocknumberInput() {
     <>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <HeadingText />
-          <styledEl.MarketPriceButton>
+          {/* <HeadingText  /> */}
+          <styledEl.MarketPriceButton onClick={() => {
+            if (currentBlockHeight) {
+
+            updateFairblockState({
+              // currentBlockHeight: parseInt(currentBlockHeight + 10, 10) ?? '',
+              targetBlockHeightTyped: (+currentBlockHeight + 10).toString(),
+              targetBlockHeightDisplayed: parseInt((currentBlockHeight + 10).toString(10), 10) ?? '',
+            })
+          }
+
+          }}>
             <span>Set 10 blocks from now</span>
           </styledEl.MarketPriceButton>
         </styledEl.Header>

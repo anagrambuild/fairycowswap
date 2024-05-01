@@ -50,7 +50,7 @@ export interface ParsedOrder {
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
-
+  encryptedBlock?: string
   executionData: ParsedOrderExecutionData
 }
 
@@ -96,6 +96,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   }
 
   return {
+    encryptedBlock: order.encryptedBlock as any,
     id: order.id,
     owner: order.owner,
     isCancelling: order.isCancelling,
