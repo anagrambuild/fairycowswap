@@ -88,7 +88,7 @@
       "options": {
         "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
       },
-      "inputs": ["{workspaceRoot}/apps/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"],
+      "inputs": ["{workspaceRoot}/apps/cowswap-frontend/src/pages/**/*.{ts,tsx,jsx}", "{workspaceRoot}/apps/cowswap-frontend/src/pages/**/*.{ts,tsx,jsx}"],
       "outputs": ["{projectRoot}/src/locales/*.po"]
     }
   },

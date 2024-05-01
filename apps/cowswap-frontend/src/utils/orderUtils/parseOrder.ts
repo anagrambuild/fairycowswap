@@ -50,7 +50,7 @@ export interface ParsedOrder {
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
-
+  encryptedBlock?: string
   executionData: ParsedOrderExecutionData
 }
 

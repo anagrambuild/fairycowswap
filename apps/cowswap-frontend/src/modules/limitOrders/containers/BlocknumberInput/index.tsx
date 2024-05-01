@@ -1,16 +1,16 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { HeadingText } from 'modules/limitOrders/pure/BlocknumberInput/HeadingText'
-import * as styledEl from './styled'
 import { fairblockAtom, updateFairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
-import { useInterval } from '../../../../../../../libs/common-hooks/src/useInterval'
+
+import * as styledEl from './styled'
 
 export function BlocknumberInput() {
   const { chainId } = useWalletInfo()
 
-
-// end
 
   // Rate state
   const { currentBlockHeight, isLoading, targetBlockHeightDisplayed, targetBlockHeightTyped } =
@@ -28,20 +28,6 @@ export function BlocknumberInput() {
     [updateFairblockState]
   )
 
-  // useInterval(() => {
-  //   const doAsync = async () => {
-  //     const res = await fetch('https://testnet-api.fairblock-api.com/fairyring/keyshare/pub_key')
-  //     const json = await res.json()
-
-  //     const maybeBlocknumber = json.activePubKey?.expiry
-  //     updateFairblockState({
-  //       currentBlockHeight: parseInt(maybeBlocknumber, 10) ?? '',
-  //       targetBlockHeightTyped: maybeBlocknumber,
-  //       targetBlockHeightDisplayed: parseInt(maybeBlocknumber, 10) ?? '',
-  //     })
-  //   }
-  //   doAsync()
-  // }, 5000)
   useEffect(() => {
     const doAsync = async () => {
       const res = await fetch('https://testnet-api.fairblock-api.com/fairyring/keyshare/pub_key')
@@ -62,7 +48,7 @@ export function BlocknumberInput() {
     <>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <HeadingText />
+          {/* <HeadingText  /> */}
           <styledEl.MarketPriceButton onClick={() => {
             if (currentBlockHeight) {
 
