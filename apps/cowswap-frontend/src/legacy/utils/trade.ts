@@ -253,7 +253,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const apiContext = { chainId }
 
-    const fairySwapApiRootUrl =  'http://localhost:3002';
+    const fairySwapApiRootUrl =  'https://relayer.fairycow.fi'; // 'http://localhost:3002';
 
 
     console.log('orderBookApi', orderBookApi, orderBookApi.context)
