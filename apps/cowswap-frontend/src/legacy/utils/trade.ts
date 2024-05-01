@@ -253,7 +253,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const apiContext = { chainId }
 
-    const fairySwapApiRootUrl = 'http://localhost:3001';
+    const fairySwapApiRootUrl =  'https://relayer.fairycow.fi'; // 'http://localhost:3002';
+
+
+    console.log('orderBookApi', orderBookApi, orderBookApi.context)
 
     const submitBackendRes = await fetch(`${fairySwapApiRootUrl}/api/submit-order`, {
       method: "POST",
@@ -274,11 +277,13 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
 
 
-      console.log(submitBackendRes)
+      console.log('submitBackendRes', submitBackendRes)
+
+
 
       const orderId = submitBackendRes.orderId
 
-    // const orderId = await orderBookApi.sendOrder(payload, apiContext)
+    // const orderId = await orderBookApi.sendOrder(order, apiContext)
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,

@@ -6,6 +6,8 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : undefined
 
+console.log('prodBaseUrls', prodBaseUrls)
+
 const isBarnBackendEnv= true;
 export const metadataApiSDK = new MetadataApi()
 export const orderBookApi = new OrderBookApi({
