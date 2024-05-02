@@ -7,6 +7,7 @@ import {
   isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -26,25 +27,25 @@ import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
+import { fairblockAtom, fairblockStore } from 'modules/limitOrders/state/fairblockAtom'
 
 import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
-import { calculateUniqueOrderId } from 'modules/swap/services/ethFlow/steps/calculateUniqueOrderId'
+// import { calculateUniqueOrderId } from 'modules/swap/services/ethFlow/steps/calculateUniqueOrderId'
 
-import {
-  DirectSecp256k1HdWallet,
-  EncodeObject,
-  OfflineDirectSigner,
-} from '@cosmjs/proto-signing';
-import { Client } from 'fairyring-client-ts';
-import { SigningStargateClient } from '@cosmjs/stargate';
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import { timelockEncrypt } from 'ts-ibe';
-import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate';
-import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
-import { fairblockAtom, fairblockStore } from 'modules/limitOrders/state/fairblockAtom'
-import { jotaiStore } from '@cowprotocol/core'
+// import {
+//   DirectSecp256k1HdWallet,
+//   EncodeObject,
+//   OfflineDirectSigner,
+// } from '@cosmjs/proto-signing';
+// import { Client } from 'fairyring-client-ts';
+// import { SigningStargateClient } from '@cosmjs/stargate';
+// import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+// import { timelockEncrypt } from 'ts-ibe';
+// import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate';
+// import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
+// import { jotaiStore } from '@cowprotocol/core'
 
 export type PostOrderParams = {
   account: string
@@ -364,7 +365,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       additionalParams: { ...params, orderId, summary, signature, signingScheme },
     })
 
-    fairblockStore.set(fairblockAtom, x => {
+    jotaiStore.set(fairblockAtom, x => {
       return {
         ...x,
         isEncrypting: true,
