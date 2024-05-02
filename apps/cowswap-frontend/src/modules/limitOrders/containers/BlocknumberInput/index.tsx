@@ -63,7 +63,7 @@ export function BlocknumberInput() {
     <>
       <styledEl.Wrapper>
         <styledEl.Header>
-          {/* <HeadingText  /> */}
+          <HeadingText />
           <styledEl.MarketPriceButton onClick={() => {
             if (currentBlockHeight) {
 

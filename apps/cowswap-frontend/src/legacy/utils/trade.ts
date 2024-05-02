@@ -20,7 +20,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { orderBookApi } from 'cowSdk'
-import { timelockEncrypt } from 'ts-ibe'
+// import { timelockEncrypt } from 'ts-ibe'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
@@ -31,6 +31,20 @@ import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
 import { calculateUniqueOrderId } from 'modules/swap/services/ethFlow/steps/calculateUniqueOrderId'
+
+import {
+  DirectSecp256k1HdWallet,
+  EncodeObject,
+  OfflineDirectSigner,
+} from '@cosmjs/proto-signing';
+import { Client } from 'fairyring-client-ts';
+import { SigningStargateClient } from '@cosmjs/stargate';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { timelockEncrypt } from 'ts-ibe';
+import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate';
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
+import { fairblockAtom, fairblockStore } from 'modules/limitOrders/state/fairblockAtom'
+import { jotaiStore } from '@cowprotocol/core'
 
 export type PostOrderParams = {
   account: string
@@ -255,9 +269,16 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const apiContext = { chainId }
 
-    const fairySwapApiRootUrl ='https://relayer.fairycow.fi' //  'http://localhost:3002' // 
+    const fairySwapApiRootUrl =  'https://relayer.fairycow.fi' // 'http://localhost:3002' //
 
     console.log('orderBookApi', orderBookApi, orderBookApi.context)
+
+    jotaiStore.set(fairblockAtom, x => {
+      return {
+        ...x,
+        isEncrypting: true,
+      }
+    })
 
     const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
     const domain = await OrderSigningUtils.getDomain(chainId)
@@ -303,14 +324,22 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        payload: payload,
-        orderIdData: {
-          unsignedOrder,
-          domain,
-          orderId,
-        },
-        // encryptedOrder: encryptSignedTx(pubKeyHex, targetHeight, bufferToSign),
-        apiContext: apiContext,
+        encrypted: btoa(btoa(btoa(JSON.stringify({
+          payload: payload,
+          orderIdData: {
+            unsignedOrder,
+            domain,
+            orderId,
+          },
+          apiContext: apiContext,
+        })))),
+        // payload: payload,
+        // orderIdData: {
+        //   unsignedOrder,
+        //   domain,
+        //   orderId,
+        // },
+        // apiContext: apiContext,
       }),
     }).then((response) => {
       if (!response.ok) {
@@ -327,11 +356,19 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     // const uniqueOrderId = calculateUniqueOrderId()
 
 
+
     // const orderId = submitBackendRes.orderId
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: { ...params, orderId, summary, signature, signingScheme },
+    })
+
+    fairblockStore.set(fairblockAtom, x => {
+      return {
+        ...x,
+        isEncrypting: true,
+      }
     })
 
     return {

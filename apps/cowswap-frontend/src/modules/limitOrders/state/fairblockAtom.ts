@@ -1,4 +1,5 @@
-import { atom } from 'jotai'
+import { atom, createStore } from 'jotai'
+
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 export interface FairblockState {
@@ -6,6 +7,7 @@ export interface FairblockState {
   readonly currentBlockHeight: number | null
   readonly targetBlockHeightTyped: string | null
   readonly targetBlockHeightDisplayed: number | null
+  readonly isEncrypting: boolean;
 }
 
 export const initFairblockState = () => ({
@@ -13,9 +15,11 @@ export const initFairblockState = () => ({
   targetBlockHeightTyped: null,
   targetBlockHeightDisplayed: null,
   isLoading: false,
-
+  isEncrypting: false,
 })
 
 export const { atom: fairblockAtom, updateAtom: updateFairblockAtom } = atomWithPartialUpdate(
   atom<FairblockState>(initFairblockState())
 )
+
+export const fairblockStore = createStore()

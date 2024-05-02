@@ -26,13 +26,13 @@ const Wrapper = styled.span`
 
 export function HeadingText({currency }: Props) {
   if (!currency) {
-    return <Wrapper>Target Fairy Block to decrypt limit order</Wrapper>
+    return <Wrapper> Target Fairyring Block</Wrapper>
   }
 
   return (
     <Wrapper>
       {/* Price of <TokenSymbol token={currency} /> */}
-      Target Fairyring block height
+      Target Fairyring Block
     </Wrapper>
   )
 }
