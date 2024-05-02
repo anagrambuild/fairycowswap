@@ -11,7 +11,6 @@ import * as styledEl from './styled'
 export function BlocknumberInput() {
   const { chainId } = useWalletInfo()
 
-
   // Rate state
   const { currentBlockHeight, isLoading, targetBlockHeightDisplayed, targetBlockHeightTyped } =
     useAtomValue(fairblockAtom)

@@ -20,6 +20,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { orderBookApi } from 'cowSdk'
+import { timelockEncrypt } from 'ts-ibe'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
@@ -29,6 +30,7 @@ import { AppDataInfo } from 'modules/appData'
 import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import { calculateUniqueOrderId } from 'modules/swap/services/ethFlow/steps/calculateUniqueOrderId'
 
 export type PostOrderParams = {
   account: string
@@ -49,6 +51,7 @@ export type PostOrderParams = {
   class: OrderClass
   partiallyFillable: boolean
   quoteId?: number
+  encryptionBlock?: number
   isSafeWallet: boolean
 }
 
@@ -238,7 +241,6 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   return await wrapErrorInOperatorError(async () => {
     // Call API
-
     const payload = {
       ...unsignedOrder,
       from: account,
@@ -253,37 +255,79 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const apiContext = { chainId }
 
-    const fairySwapApiRootUrl =  'https://relayer.fairycow.fi'; // 'http://localhost:3002';
-
+    const fairySwapApiRootUrl ='https://relayer.fairycow.fi' //  'http://localhost:3002' // 
 
     console.log('orderBookApi', orderBookApi, orderBookApi.context)
 
+    const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
+    const domain = await OrderSigningUtils.getDomain(chainId)
+    const orderDigest = hashOrder(domain, unsignedOrder as any)
+    const orderId = packOrderUidParams({
+      orderDigest,
+      owner: unsignedOrder.receiver,
+      validTo: unsignedOrder.validTo,
+    })
+
+    // const orderId2 = await orderBookApi.sendOrder(payload, apiContext)
+
+    console.log('orderId', orderId)
+    // console.log('orderId2(from orderbook)', orderId2)
+
+    // return;
+
+
+    // Normally we'd send it directly to the orderbook. Instead, we submit the encrypted order
+    // To the fairy relayer, which will take care of submitting to Fairyring cosmos chain.
+    // From there, the order will be decrypted and posted to CowSwap orderbooks by another relayer.
+
+    // const encryptDataForOrder = await fetch(`${fairySwapApiRootUrl}/api/request-encrypt`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     payload: payload,
+    //     apiContext: apiContext,
+    //   }),
+    // })
+
+    // const { pubKeyHex, targetHeight, bufferToSign } = await encryptDataForOrder.json()
+
+    // const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBuf: Buffer): Promise<string> => {
+    //   return await timelockEncrypt(targetHeight.toString(), pubKeyHex, signedBuf)
+    // }
+
     const submitBackendRes = await fetch(`${fairySwapApiRootUrl}/api/submit-order`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         payload: payload,
+        orderIdData: {
+          unsignedOrder,
+          domain,
+          orderId,
+        },
+        // encryptedOrder: encryptSignedTx(pubKeyHex, targetHeight, bufferToSign),
         apiContext: apiContext,
       }),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      return response.json()
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+
+    console.log('submitBackendRes', submitBackendRes)
+    console.log('precomputedorderId', orderId)
+
+    console.log('orderIdFromBackend', submitBackendRes.orderId)
+    console.log('match', orderId === submitBackendRes.orderId)
+    // const uniqueOrderId = calculateUniqueOrderId()
 
 
-
-      console.log('submitBackendRes', submitBackendRes)
-
-
-
-      const orderId = submitBackendRes.orderId
-
-    // const orderId = await orderBookApi.sendOrder(order, apiContext)
+    // const orderId = submitBackendRes.orderId
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
