@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -28,21 +28,37 @@ export function BlocknumberInput() {
     [updateFairblockState]
   )
 
+  const hasSetInitialBlockRef = useRef<boolean>(false)
   useEffect(() => {
-    const doAsync = async () => {
-      const res = await fetch('https://testnet-api.fairblock-api.com/fairyring/keyshare/pub_key')
-      const json = await res.json()
 
-      const maybeBlocknumber = json.activePubKey?.expiry
+    const doAsync = async () => {
+      // const res = await fetch('https://testnet-api.fairblock-api.com/fairyring/keyshare/pub_key')
+      // const json = await res.json()
+      if (!currentBlockHeight) {
+        return;
+      }
+
+      const maybeBlocknumber = currentBlockHeight.toString(10) //json.activePubKey?.expiry
+
+      if (hasSetInitialBlockRef.current === true) {
+        return
+      }
+
       updateFairblockState({
         currentBlockHeight: parseInt(maybeBlocknumber, 10) ?? '',
         targetBlockHeightTyped: maybeBlocknumber,
         targetBlockHeightDisplayed: parseInt(maybeBlocknumber, 10) ?? '',
       })
+
+      hasSetInitialBlockRef.current = true;
     }
 
+    if (hasSetInitialBlockRef.current === true) {
+      return
+    }
     doAsync()
-  }, [updateFairblockState])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentBlockHeight])
 
   return (
     <>
