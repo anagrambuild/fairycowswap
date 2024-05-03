@@ -53,6 +53,7 @@ export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrd
 export interface AddUnserialisedPendingOrderParams extends GetRemoveOrderParams {
   order: Order
   isSafeWallet: boolean
+  encryptedBlock?: number
 }
 
 interface GetRemoveOrderParams {

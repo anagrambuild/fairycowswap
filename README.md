@@ -1,5 +1,14 @@
 [![Tests](https://github.com/cowprotocol/cowswap/workflows/CI/badge.svg)](https://github.com/cowprotocol/cowswap/actions/workflows/ci.yml?query=workflow%3ACI)
 
+# FairyCow Swap
+
+
+![FairyCow Swap](./docs/images/fairycowswap.png)
+
+## Time-locked limit orders
+
+![FairyCow Swap](./docs/images/fairycowswap-diagram.png)
+
 CoW Swap is the first trading interface built on top of CoW Protocol.
 
 It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.

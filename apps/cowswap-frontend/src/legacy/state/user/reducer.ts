@@ -51,7 +51,7 @@ export const initialState: UserState = {
   selectedWallet: undefined,
   selectedWalletBackfilled: false,
   matchesDarkMode: false,
-  userDarkMode: null,
+  userDarkMode: true,
   // TODO: mod, shouldn't be here
   recipientToggleVisible: false,
   userLocale: null,
