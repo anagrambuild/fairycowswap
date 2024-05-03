@@ -1,6 +1,27 @@
 import { atom, createStore } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+
+interface FairblockLocalAccount {
+  pkm?: string
+}
+
+export const fairblockLocalAccountAtom = atomWithStorage<FairblockLocalAccount>(
+  'localFairblockKey:v1', // local storage key
+  {},
+)
+
+export const addFairblockLocalAccountAtom = atom(
+  null,
+  (_get, set, { pkm }: { pkm: string }) => {
+    set(fairblockLocalAccountAtom, () => {
+      return {
+        pkm,
+      }
+    })
+  }
+)
 
 export interface FairblockState {
   readonly isLoading: boolean

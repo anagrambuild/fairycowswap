@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -29,15 +29,11 @@ export function BlocknumberInput() {
 
   const hasSetInitialBlockRef = useRef<boolean>(false)
   useEffect(() => {
-
     const doAsync = async () => {
-      // const res = await fetch('https://testnet-api.fairblock-api.com/fairyring/keyshare/pub_key')
-      // const json = await res.json()
       if (!currentBlockHeight) {
-        return;
+        return
       }
-
-      const maybeBlocknumber = currentBlockHeight.toString(10) //json.activePubKey?.expiry
+      const maybeBlocknumber = currentBlockHeight.toString(10)
 
       if (hasSetInitialBlockRef.current === true) {
         return
@@ -49,14 +45,14 @@ export function BlocknumberInput() {
         targetBlockHeightDisplayed: parseInt(maybeBlocknumber, 10) ?? '',
       })
 
-      hasSetInitialBlockRef.current = true;
+      hasSetInitialBlockRef.current = true
     }
 
     if (hasSetInitialBlockRef.current === true) {
       return
     }
     doAsync()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentBlockHeight])
 
   return (
@@ -64,17 +60,17 @@ export function BlocknumberInput() {
       <styledEl.Wrapper>
         <styledEl.Header>
           <HeadingText currency={null} inputCurrency={null} rateImpact={0} />
-          <styledEl.MarketPriceButton onClick={() => {
-            if (currentBlockHeight) {
-
-            updateFairblockState({
-              // currentBlockHeight: parseInt(currentBlockHeight + 10, 10) ?? '',
-              targetBlockHeightTyped: (+currentBlockHeight + 10).toString(),
-              targetBlockHeightDisplayed: parseInt((currentBlockHeight + 10).toString(10), 10) ?? '',
-            })
-          }
-
-          }}>
+          <styledEl.MarketPriceButton
+            onClick={() => {
+              if (currentBlockHeight) {
+                updateFairblockState({
+                  // currentBlockHeight: parseInt(currentBlockHeight + 10, 10) ?? '',
+                  targetBlockHeightTyped: (+currentBlockHeight + 10).toString(),
+                  targetBlockHeightDisplayed: parseInt((currentBlockHeight + 10).toString(10), 10) ?? '',
+                })
+              }
+            }}
+          >
             <span>Set 10 blocks from now</span>
           </styledEl.MarketPriceButton>
         </styledEl.Header>

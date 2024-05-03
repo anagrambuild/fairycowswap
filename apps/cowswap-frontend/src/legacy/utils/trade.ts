@@ -20,32 +20,20 @@ import {
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { DirectSecp256k1HdWallet, OfflineDirectSigner } from '@cosmjs/proto-signing'
 import { orderBookApi } from 'cowSdk'
-// import { timelockEncrypt } from 'ts-ibe'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
-import { fairblockAtom, fairblockStore } from 'modules/limitOrders/state/fairblockAtom'
+import { fairblockAtom, fairblockLocalAccountAtom } from 'modules/limitOrders/state/fairblockAtom'
 
 import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
-// import { calculateUniqueOrderId } from 'modules/swap/services/ethFlow/steps/calculateUniqueOrderId'
 
-// import {
-//   DirectSecp256k1HdWallet,
-//   EncodeObject,
-//   OfflineDirectSigner,
-// } from '@cosmjs/proto-signing';
-// import { Client } from 'fairyring-client-ts';
-// import { SigningStargateClient } from '@cosmjs/stargate';
-// import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-// import { timelockEncrypt } from 'ts-ibe';
-// import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate';
-// import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx';
-// import { jotaiStore } from '@cowprotocol/core'
+import { doEncryptAndSubmitCowswapOrderToFairychain } from './fairblock'
 
 export type PostOrderParams = {
   account: string
@@ -234,7 +222,6 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
 export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
   const { chainId, account, signer, allowsOffchainSigning, appData, isSafeWallet } = params
 
-  // debugger;
   // Prepare order
   const { summary, quoteId, order: unsignedOrder } = getSignOrderParams(params)
   const receiver = unsignedOrder.receiver
@@ -270,11 +257,25 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const apiContext = { chainId }
 
-    const fairySwapApiRootUrl =  'https://relayer.fairycow.fi' // 'http://localhost:3002' //
+    // Create throwaway fairyring keypair and assocaite it with user.
+    // We just need a pubkey to encrypt the order. The wallet does not hold any value.
+    const localAccountData = jotaiStore.get(fairblockLocalAccountAtom)
+    let localFairblockAccount: OfflineDirectSigner
+    if (!localAccountData.pkm) {
+      const newFairblockWallet = await DirectSecp256k1HdWallet.generate()
+      localFairblockAccount = newFairblockWallet
+      const mnemonic = newFairblockWallet.mnemonic
+      jotaiStore.set(fairblockLocalAccountAtom, (x) => {
+        return {
+          ...x,
+          pkm: mnemonic,
+        }
+      })
+    } else {
+      localFairblockAccount = await DirectSecp256k1HdWallet.fromMnemonic(localAccountData.pkm)
+    }
 
-    console.log('orderBookApi', orderBookApi, orderBookApi.context)
-
-    jotaiStore.set(fairblockAtom, x => {
+    jotaiStore.set(fairblockAtom, (x) => {
       return {
         ...x,
         isEncrypting: true,
@@ -290,82 +291,15 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       validTo: unsignedOrder.validTo,
     })
 
-    // const orderId2 = await orderBookApi.sendOrder(payload, apiContext)
-
-    console.log('orderId', orderId)
-    // console.log('orderId2(from orderbook)', orderId2)
-
-    // return;
-
-
-    // Normally we'd send it directly to the orderbook. Instead, we submit the encrypted order
-    // To the fairy relayer, which will take care of submitting to Fairyring cosmos chain.
-    // From there, the order will be decrypted and posted to CowSwap orderbooks by another relayer.
-
-    // const encryptDataForOrder = await fetch(`${fairySwapApiRootUrl}/api/request-encrypt`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     payload: payload,
-    //     apiContext: apiContext,
-    //   }),
-    // })
-
-    // const { pubKeyHex, targetHeight, bufferToSign } = await encryptDataForOrder.json()
-
-    // const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBuf: Buffer): Promise<string> => {
-    //   return await timelockEncrypt(targetHeight.toString(), pubKeyHex, signedBuf)
-    // }
-
-    const submitBackendRes = await fetch(`${fairySwapApiRootUrl}/api/submit-order`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        encrypted: btoa(btoa(btoa(JSON.stringify({
-          payload: payload,
-          orderIdData: {
-            unsignedOrder,
-            domain,
-            orderId,
-          },
-          apiContext: apiContext,
-        })))),
-        // payload: payload,
-        // orderIdData: {
-        //   unsignedOrder,
-        //   domain,
-        //   orderId,
-        // },
-        // apiContext: apiContext,
-      }),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      return response.json()
-    })
-
-    console.log('submitBackendRes', submitBackendRes)
-    console.log('precomputedorderId', orderId)
-
-    console.log('orderIdFromBackend', submitBackendRes.orderId)
-    console.log('match', orderId === submitBackendRes.orderId)
-    // const uniqueOrderId = calculateUniqueOrderId()
-
-
-
-    // const orderId = submitBackendRes.orderId
+    // Submit locally, CowSwap order never leaves your client
+    doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, localFairblockAccount)
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: { ...params, orderId, summary, signature, signingScheme },
     })
 
-    jotaiStore.set(fairblockAtom, x => {
+    jotaiStore.set(fairblockAtom, (x) => {
       return {
         ...x,
         isEncrypting: true,
