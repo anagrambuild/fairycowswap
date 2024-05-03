@@ -7,6 +7,7 @@ import {
   isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -19,16 +20,20 @@ import {
 import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { DirectSecp256k1HdWallet, OfflineDirectSigner } from '@cosmjs/proto-signing'
 import { orderBookApi } from 'cowSdk'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
+import { fairblockAtom, fairblockLocalAccountAtom } from 'modules/limitOrders/state/fairblockAtom'
 
 import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+
+import { doEncryptAndSubmitCowswapOrderToFairychain } from './fairblock'
 
 export type PostOrderParams = {
   account: string
@@ -49,6 +54,7 @@ export type PostOrderParams = {
   class: OrderClass
   partiallyFillable: boolean
   quoteId?: number
+  encryptionBlock?: number
   isSafeWallet: boolean
 }
 
@@ -237,24 +243,67 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   return await wrapErrorInOperatorError(async () => {
     // Call API
-    const orderId = await orderBookApi.sendOrder(
-      {
-        ...unsignedOrder,
-        from: account,
-        receiver,
-        signingScheme,
-        // Include the signature
-        signature,
-        quoteId,
-        appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
-        appDataHash: appData.appDataKeccak256,
-      },
-      { chainId }
-    )
+    const payload = {
+      ...unsignedOrder,
+      from: account,
+      receiver,
+      signingScheme,
+      // Include the signature
+      signature,
+      quoteId,
+      appData: appData.fullAppData, // We sign the keccak256 hash, but we send the API the full appData string
+      appDataHash: appData.appDataKeccak256,
+    }
+
+    const apiContext = { chainId }
+
+    // Create throwaway fairyring keypair and assocaite it with user.
+    // We just need a pubkey to encrypt the order. The wallet does not hold any value.
+    const localAccountData = jotaiStore.get(fairblockLocalAccountAtom)
+    let localFairblockAccount: OfflineDirectSigner
+    if (!localAccountData.pkm) {
+      const newFairblockWallet = await DirectSecp256k1HdWallet.generate()
+      localFairblockAccount = newFairblockWallet
+      const mnemonic = newFairblockWallet.mnemonic
+      jotaiStore.set(fairblockLocalAccountAtom, (x) => {
+        return {
+          ...x,
+          pkm: mnemonic,
+        }
+      })
+    } else {
+      localFairblockAccount = await DirectSecp256k1HdWallet.fromMnemonic(localAccountData.pkm)
+    }
+
+    jotaiStore.set(fairblockAtom, (x) => {
+      return {
+        ...x,
+        isEncrypting: true,
+      }
+    })
+
+    const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
+    const domain = await OrderSigningUtils.getDomain(chainId)
+    const orderDigest = hashOrder(domain, unsignedOrder as any)
+    const orderId = packOrderUidParams({
+      orderDigest,
+      owner: unsignedOrder.receiver,
+      validTo: unsignedOrder.validTo,
+    })
+
+    // Submit locally, CowSwap order never leaves your client
+    doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, localFairblockAccount)
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: { ...params, orderId, summary, signature, signingScheme },
+    })
+
+    jotaiStore.set(fairblockAtom, (x) => {
+      return {
+        ...x,
+        isEncrypting: false,
+      }
     })
 
     return {

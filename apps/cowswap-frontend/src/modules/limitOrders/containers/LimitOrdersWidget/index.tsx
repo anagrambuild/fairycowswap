@@ -26,14 +26,15 @@ import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
+import { BlocknumberInput } from '../BlocknumberInput'
 import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Set any limit price and time horizon' },
-  { content: 'FREE order placement and cancellation' },
+  { content: 'Set encrypted orders for the future' },
+  { content: 'Encrypted DCA orders until they become active' },
   { content: 'Place multiple orders using the same balance' },
   { content: 'Receive surplus of your order' },
   { content: 'Protection from MEV by default' },
@@ -47,10 +48,10 @@ export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
 ]
 
 const UNLOCK_SCREEN = {
-  title: 'Want to try out limit orders?',
+  title: 'Want to try out time-locked encrypted limit orders?',
   subtitle: 'Get started!',
   orderType: 'partially fillable',
-  buttonText: 'Get started with limit orders',
+  buttonText: 'Get started with time encrypted limit orders',
   buttonLink:
     'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
 }
@@ -191,10 +192,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       />
     ),
     middleContent: (
-      <styledEl.RateWrapper>
-        <RateInput />
-        <DeadlineInput />
-      </styledEl.RateWrapper>
+      <>
+        <styledEl.RateWrapper>
+          <RateInput />
+          <DeadlineInput />
+        </styledEl.RateWrapper>
+        <styledEl.RateWrapper style={{ display: 'flex', flex: 1 }}>
+          <BlocknumberInput />
+        </styledEl.RateWrapper>
+      </>
     ),
     bottomContent: (
       <>

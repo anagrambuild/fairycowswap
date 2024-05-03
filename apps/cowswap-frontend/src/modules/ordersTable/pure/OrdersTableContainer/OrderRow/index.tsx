@@ -144,10 +144,12 @@ export interface OrderRowProps {
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
+  encryptedBlock?: number;
 }
 
 export function OrderRow({
   order,
+  encryptedBlock,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
@@ -324,7 +326,7 @@ export function OrderRow({
       {isOpenOrdersTab && (
         <styledEl.CellElement doubleRow>
           <b>{expirationTimeAgo}</b>
-          <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+          <i>{isScheduledCreating ? 'Creating...' : encryptedBlock ? 'Timelock Encrypted' : creationTimeAgo}</i>
         </styledEl.CellElement>
       )}
 
