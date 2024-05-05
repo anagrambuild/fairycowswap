@@ -24,6 +24,9 @@ const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
 export default defineConfig(({ mode }) => {
+
+  
+
   const plugins = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
@@ -37,9 +40,11 @@ export default defineConfig(({ mode }) => {
     react({
       plugins: [['@lingui/swc-plugin', {}]],
     }),
-    viteTsConfigPaths({
-      root: '../../',
-    }),
+    // viteTsConfigPaths({
+    //   loose: true, 
+    //   root: '../../',
+
+    // }),
     macrosPlugin(),
     lingui({
       cwd: 'apps/cowswap-frontend',
@@ -105,10 +110,13 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
+
       assetsInlineLimit: 0, // prevent inlining assets
       // sourcemap: true, // disabled for now, as this is causing vercel builds to fail
       rollupOptions: {
+
         output: {
+          
           manualChunks(id) {
             if (id.includes('@1inch')) return '@1inch'
             if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'

@@ -4,8 +4,9 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "types": ["node", "vite/client"],
     "baseUrl": "src",
     "paths": {
@@ -33,6 +34,7 @@
   },
   "files": [],
   "include": [],
+  // "exclude": ["**fairyring-client-ts/**/*.ts"],
   "references": [
     {
       "path": "./tsconfig.app.json"

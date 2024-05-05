@@ -81,7 +81,7 @@ export async function tradeFlow(
     beforeTrade()
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: sign and post order')
-    const { id: orderId, order } = await signAndPostOrder({
+    const { id: orderId, order, encryptedBlock } = await signAndPostOrder({
       ...postOrderParams,
       signer: provider.getSigner(),
       validTo,
@@ -94,10 +94,11 @@ export async function tradeFlow(
         chainId: chainId,
         order: {
           ...order,
-          encryptedBlock: 2,
+          encryptedBlock: encryptedBlock,
           isHidden: !allowsOffchainSigning,
         },
         isSafeWallet,
+
       },
       dispatch
     )

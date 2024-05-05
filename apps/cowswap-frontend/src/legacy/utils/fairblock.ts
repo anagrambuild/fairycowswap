@@ -74,7 +74,7 @@ const submitMsgToFairychain = async (userMsg: string, wallet: OfflineDirectSigne
   const fairyringBalance = fairyringBalanceResponseData.data.balance
   console.log('Fairyring: balance', fairyringBalance, fairyringBalance?.amount)
 
-  if (fairyringBalance.amount === '0') {
+  if (fairyringBalance?.amount === '0') {
     console.log('Fairyring: no balance, sending some')
     const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
     const faucetJson = await faucetReq.json()

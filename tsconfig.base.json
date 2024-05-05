@@ -16,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noUnusedLocals": false,
