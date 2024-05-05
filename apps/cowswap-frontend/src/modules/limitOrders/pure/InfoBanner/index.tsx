@@ -33,7 +33,7 @@ export function InfoBanner() {
         <SVG src={AlertIcon} />
       </div>
       <div className="content">
-        Your order may not fill exactly when the market price reaches your limit price.{' '}
+        FairyCoW Swap is a demonstration of Fairblock's modular programmable encryption with an existing intent-driven application on the EVM. Do not use with real money. Available only Sepolia.{' '}
         <HashLink target="_blank" to="/faq/limit-order#how-do-fees-work">
           Learn more
         </HashLink>

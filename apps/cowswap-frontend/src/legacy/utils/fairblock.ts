@@ -1,11 +1,4 @@
-/* eslint-disable */
-import { EncodeObject, OfflineDirectSigner } from '@cosmjs/proto-signing'
-import { Client } from 'fairyring-client-ts'
-import { SigningStargateClient } from '@cosmjs/stargate'
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
-import { timelockEncrypt } from 'ts-ibe'
-import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate'
-import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
+/* eslint-disable no-debugger */
 import {
   ApiContext,
   OrderCreation,
@@ -13,6 +6,15 @@ import {
   SupportedChainId,
   UnsignedOrder,
 } from '@cowprotocol/cow-sdk'
+
+import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate'
+import { DirectSecp256k1HdWallet, EncodeObject, OfflineDirectSigner } from '@cosmjs/proto-signing'
+import { SigningStargateClient } from '@cosmjs/stargate'
+import { Client } from '@johnrjj/fairysdk-test'
+// import { Client } from 'fairyring-client-ts';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
+import { timelockEncrypt } from 'ts-ibe'
 
 const FAIRYRING_TESTNET_RPC_URL = 'https://testnet-rpc.fairblock.network'
 const FAIRYRING_TESTNET_API_URL = 'https://testnet-api.fairblock.network'
@@ -50,22 +52,27 @@ const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBu
   return await timelockEncrypt(targetHeight.toString(), pubKeyHex, signedBuf)
 }
 
-const submitMsgToFairychain = async (userMsg: string, wallet: OfflineDirectSigner) => {
+const submitMsgToFairychain = async (userMsg: string, _wallet: OfflineDirectSigner) => {
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+    'enlist hip relief stomach skate base shallow young switch frequent cry park',
+    { prefix: 'fairy' }
+  );
   const [firstAccount] = await wallet.getAccounts()
   const address = firstAccount.address
 
   // Now user has enough fairy token
   // In the future this will be done via cosmos x/feegrant module
-
+  // Or can use relayer module + secured by a lightweight AVS
   const fromWalletAddress = address
-  const offlineSigner: OfflineDirectSigner = wallet
+  const offlineSigner = wallet
 
+  // const { Client } = await import('@johnrjj/fairysdk-test')
   const fairblockClient = new Client(
     {
       apiURL: FAIRYRING_TESTNET_API_URL,
       rpcURL: FAIRYRING_TESTNET_RPC_URL,
     },
-    wallet
+    wallet,
   )
 
   const fairyringBalanceResponseData = await fairblockClient.CosmosBankV1Beta1.query.queryBalance(address, {
@@ -74,7 +81,7 @@ const submitMsgToFairychain = async (userMsg: string, wallet: OfflineDirectSigne
   const fairyringBalance = fairyringBalanceResponseData.data.balance
   console.log('Fairyring: balance', fairyringBalance, fairyringBalance?.amount)
 
-  if (fairyringBalance.amount === '0') {
+  if (fairyringBalance?.amount === '0') {
     console.log('Fairyring: no balance, sending some')
     const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
     const faucetJson = await faucetReq.json()
@@ -90,7 +97,7 @@ const submitMsgToFairychain = async (userMsg: string, wallet: OfflineDirectSigne
   const signer = await SigningStargateClient.connectWithSigner(FAIRYRING_TESTNET_RPC_URL, offlineSigner)
 
   fairblockClient.registry.forEach(([name, type]) => {
-    signer.registry.register(name, type)
+    signer.registry.register(name, type as any)
   })
 
   const { accountNumber } = await signer.getSequence(address)
@@ -196,7 +203,7 @@ const submitMsgToFairychain = async (userMsg: string, wallet: OfflineDirectSigne
 
   const pubkey = keysharePubkeyResult.data
 
-  let keysharePubKeyForEncryption: string = pubkey?.activePubKey?.publicKey as string
+  const keysharePubKeyForEncryption: string = pubkey?.activePubKey?.publicKey as string
   // if (
   //   targetHeightRange?.end &&
   //   state.targetHeight <= (pubkey?.queuedPubKey?.publicKey ? targetHeightRange.end - 100 : targetHeightRange.end)

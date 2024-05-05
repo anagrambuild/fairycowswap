@@ -48,8 +48,8 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
                 },
                 options: {
                   projectId: WC_PROJECT_ID,
-                  chains: [chainId],
-                  optionalChains: ALL_SUPPORTED_CHAIN_IDS,
+                  chains: [SupportedChainId.SEPOLIA],
+                  optionalChains: [SupportedChainId.SEPOLIA], //ALL_SUPPORTED_CHAIN_IDS,
                   showQrModal: true,
                   rpcMap: RPC_URLS,
                 },

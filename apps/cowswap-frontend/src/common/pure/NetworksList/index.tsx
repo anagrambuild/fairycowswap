@@ -17,7 +17,7 @@ export function NetworksList(props: NetworksListProps) {
 
   return (
     <>
-      {ALL_SUPPORTED_CHAIN_IDS.map((targetChainId: SupportedChainId) => {
+      {[SupportedChainId.SEPOLIA].map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logoUrl, bridge, explorer, explorerTitle, helpCenterUrl } = info
 

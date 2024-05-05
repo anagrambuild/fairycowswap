@@ -60,19 +60,19 @@ export const MAIN_MENU: MenuTreeItem[] = [
     items: [
       {
         links: [
-          { id: MainMenuItemId.SWAP, kind: MenuItemKind.PARAMETRIZED_LINK, title: 'Swap', url: Routes.SWAP },
+          // { id: MainMenuItemId.SWAP, kind: MenuItemKind.PARAMETRIZED_LINK, title: 'Swap', url: Routes.SWAP },
           {
             id: MainMenuItemId.LIMIT_ORDERS,
             kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'Limit',
+            title: 'Time Encrypted Limit',
             url: Routes.LIMIT_ORDER,
           },
-          {
-            id: MainMenuItemId.ADVANCED_ORDERS,
-            kind: MenuItemKind.PARAMETRIZED_LINK,
-            title: 'TWAP',
-            url: Routes.ADVANCED_ORDERS,
-          },
+          // {
+          //   id: MainMenuItemId.ADVANCED_ORDERS,
+          //   kind: MenuItemKind.PARAMETRIZED_LINK,
+          //   title: 'TWAP',
+          //   url: Routes.ADVANCED_ORDERS,
+          // },
         ],
       },
     ],

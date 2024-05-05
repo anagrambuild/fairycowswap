@@ -88,6 +88,8 @@ export function TradeFormBlankButton({ onClick, children, disabled, loading, id 
     }
   }, [justClicked])
 
+  console.log('coocoocoo')
+
   return (
     <ActionButton ref={ref} id={id} onClick={handleClick} disabled={showLoader || disabled} hasLongText$={hasLongText}>
       {showLoader ? (

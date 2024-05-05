@@ -30,15 +30,15 @@ interface MenuItemConfig {
 }
 
 const MENU_ITEMS: MenuItemConfig[] = [
-  { route: Routes.SWAP, label: 'Swap' },
-  { route: Routes.LIMIT_ORDER, label: 'Limit' },
-  { route: Routes.ADVANCED_ORDERS, label: 'TWAP' },
+  // { route: Routes.SWAP, label: 'Swap' },
+  { route: Routes.LIMIT_ORDER, label: 'Time Encrypted Limit' },
+  // { route: Routes.ADVANCED_ORDERS, label: 'TWAP' },
 ]
 
-const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
-  swap: Routes.SWAP,
+const TRADE_TYPE_TO_ROUTE: Record<string, string> = { // KLUDGE(johnrjj) - type easing for mvp
+  // swap: Routes.SWAP,
   limit: Routes.LIMIT_ORDER,
-  advanced: Routes.ADVANCED_ORDERS,
+  // advanced: Routes.ADVANCED_ORDERS,
 }
 
 interface TradeWidgetLinksProps {

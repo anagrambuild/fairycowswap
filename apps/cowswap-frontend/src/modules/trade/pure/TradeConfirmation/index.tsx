@@ -24,7 +24,7 @@ import * as styledEl from './styled'
 
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
-import { fairblockAtom, updateFairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
+import { fairblockAtom, fairblockOrderStatus, updateFairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
 import { useAtom, useAtomValue } from 'jotai'
 
 const ONE_SEC = ms`1s`
@@ -54,7 +54,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade
 
-  const fairblockData = useAtomValue(fairblockAtom)
+
+  const isEncrypting = useAtomValue(fairblockOrderStatus)
 
   const {
     onConfirm,
@@ -144,7 +145,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           {hasPendingTrade ? (
-            fairblockData.isEncrypting ? (
+            isEncrypting ? (
               <LongLoadText fontSize={15} fontWeight={500}>
                 Encrypting order <CenteredDots smaller />
               </LongLoadText>

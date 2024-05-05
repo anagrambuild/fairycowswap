@@ -31,6 +31,7 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { DecryptTimeInput } from '../DecryptTimeSelector'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set encrypted orders for the future' },
@@ -197,8 +198,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           <RateInput />
           <DeadlineInput />
         </styledEl.RateWrapper>
-        <styledEl.RateWrapper style={{ display: 'flex', flex: 1 }}>
+        {/* <styledEl.RateWrapper style={{ display: 'flex', flex: 1 }}>
           <BlocknumberInput />
+        </styledEl.RateWrapper> */}
+        <styledEl.RateWrapper style={{ display: 'flex', flex: 1 }}>
+          <DecryptTimeInput />
         </styledEl.RateWrapper>
       </>
     ),

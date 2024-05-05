@@ -10,6 +10,10 @@ interface FairblockLocalAccount {
 export const fairblockLocalAccountAtom = atomWithStorage<FairblockLocalAccount>(
   'localFairblockKey:v1', // local storage key
   {},
+  undefined,
+  {
+    unstable_getOnInit: true,
+  }
 )
 
 export const addFairblockLocalAccountAtom = atom(
@@ -30,6 +34,8 @@ export interface FairblockState {
   readonly targetBlockHeightDisplayed: number | null
   readonly isEncrypting: boolean;
 }
+
+export const fairblockOrderStatus = atom((get) => get(fairblockAtom).isEncrypting ? 'encrypting' : null)
 
 export const initFairblockState = () => ({
   currentBlockHeight: null,

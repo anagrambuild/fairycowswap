@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { NATIVE_CURRENCY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
   formatSymbol,
@@ -25,15 +26,14 @@ import { orderBookApi } from 'cowSdk'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
+import { doEncryptAndSubmitCowswapOrderToFairychain } from 'legacy/utils/fairblock'
 
 import { AppDataInfo } from 'modules/appData'
-import { fairblockAtom, fairblockLocalAccountAtom } from 'modules/limitOrders/state/fairblockAtom'
+import { fairblockAtom, fairblockLocalAccountAtom, fairblockStore } from 'modules/limitOrders/state/fairblockAtom'
 
 import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
-
-import { doEncryptAndSubmitCowswapOrderToFairychain } from './fairblock'
 
 export type PostOrderParams = {
   account: string
@@ -259,10 +259,12 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     // Create throwaway fairyring keypair and assocaite it with user.
     // We just need a pubkey to encrypt the order. The wallet does not hold any value.
-    const localAccountData = jotaiStore.get(fairblockLocalAccountAtom)
+    const localAccountData = fairblockStore.get(fairblockLocalAccountAtom)
     let localFairblockAccount: OfflineDirectSigner
     if (!localAccountData.pkm) {
-      const newFairblockWallet = await DirectSecp256k1HdWallet.generate()
+      const newFairblockWallet = await DirectSecp256k1HdWallet.generate(12, {
+        prefix: 'fairy',
+      })
       localFairblockAccount = newFairblockWallet
       const mnemonic = newFairblockWallet.mnemonic
       jotaiStore.set(fairblockLocalAccountAtom, (x) => {
@@ -272,10 +274,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
         }
       })
     } else {
-      localFairblockAccount = await DirectSecp256k1HdWallet.fromMnemonic(localAccountData.pkm)
+      localFairblockAccount = await DirectSecp256k1HdWallet.fromMnemonic(localAccountData.pkm, { prefix: 'fairy'})
     }
 
-    jotaiStore.set(fairblockAtom, (x) => {
+    fairblockStore.set(fairblockAtom, (x) => {
       return {
         ...x,
         isEncrypting: true,
@@ -292,8 +294,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     })
 
     // Submit locally, CowSwap order never leaves your client
-    doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, localFairblockAccount)
+    const fairychainSubmitResult = await doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, localFairblockAccount)
+    const { fairblockTxHash, status } = fairychainSubmitResult
 
+    console.log('fairblockTxHash', fairblockTxHash, status);
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
       additionalParams: { ...params, orderId, summary, signature, signingScheme },
