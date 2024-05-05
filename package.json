@@ -204,6 +204,7 @@
     "text-encoding-polyfill": "^0.6.7",
     "timeago.js": "^4.0.2",
     "tiny-invariant": "^1.2.0",
+    "ts-ibe": "1.1.0",
     "tslib": "^2.3.0",
     "ua-parser-js": "^1.0.32",
     "use-async-memo": "^1.2.4",
