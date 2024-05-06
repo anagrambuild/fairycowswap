@@ -120,7 +120,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Timelock Encryption</span>
           <InfoIcon
             content={
-              'On FairyCoW Swap, your limit orders are time-locked encrypted. Specify the time you want them a limit order to securely autonomously decrypt and become public (or how long you want them to be encrypted for) and let Fairbock do the rest of the work.'
+              'On FairyCoW Swap, your limit orders are timelocked encrypted. Specify the time you want them a limit order to securely autonomously decrypt and become public (or how long you want them to be encrypted for) and let Fairbock do the rest of the work.'
             }
           />
         </div>

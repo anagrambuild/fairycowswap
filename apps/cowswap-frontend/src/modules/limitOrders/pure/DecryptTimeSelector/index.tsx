@@ -279,7 +279,6 @@ export function DecryptTimeSelector(props: DeadlineSelectorProps) {
       {/* <styledEl.Wrapper style={{ marginTop: 2 }}> */}
       <div style={{ marginTop: 16, marginBottom: 4 }}>
         {/* <ExternalLink href={'https://www.fairblock.network/'}>
-        Powered by Fairblockz
         </ExternalLink> */}
         <MarketPriceButton as={'a'} href={'https://www.fairblock.network/'} target="_blank">
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>

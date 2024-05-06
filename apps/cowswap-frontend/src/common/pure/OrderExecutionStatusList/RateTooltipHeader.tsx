@@ -57,7 +57,7 @@ export function EncryptTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps
   return (
     <Content>
       <p>
-        Your limit order is time-lock encrypted using Fairblock. When an order is encrypted, only you are able to know what the limit order contains. At the specified block time, your order will automatically decrypt and be submitted to the CoW Swap orderbook.
+        Your limit order is timelock encrypted using Fairblock. When an order is encrypted, only you are able to know what the limit order contains. At the specified block time, your order will automatically decrypt and be submitted to the CoW Swap orderbook.
       </p>
 
       {/* {isOpenOrdersTab && (

@@ -5,7 +5,7 @@
 
 ![FairyCow Swap](./docs/images/fairycowswap.png)
 
-## Time-locked limit orders
+## Timelocked limit orders
 
 ![FairyCow Swap](./docs/images/fairycowswap-diagram.png)
 
