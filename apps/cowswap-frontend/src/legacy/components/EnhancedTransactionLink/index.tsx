@@ -7,6 +7,7 @@ import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 interface Props {
   chainId: SupportedChainId
+  fairblockTransactionHash?: string
   tx: {
     hash: string
     hashType: HashType

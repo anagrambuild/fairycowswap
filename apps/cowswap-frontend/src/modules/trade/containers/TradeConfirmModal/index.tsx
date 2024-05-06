@@ -18,6 +18,8 @@ import { TradeAmounts } from 'common/types'
 import { useSetShowFollowPendingTxPopup } from '../../../wallet/hooks/useSetShowFollowPendingTxPopup'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { useAtomValue } from 'jotai'
+import { fairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
 
 const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
@@ -42,6 +44,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
+  const { lastFairychainTxHash: fairblockTransactionHash } = useAtomValue(fairblockAtom)
   const { onDismiss } = useTradeConfirmActions()
   const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
 
@@ -62,6 +65,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         error={error}
         title={title}
         pendingTrade={pendingTrade}
+        fairblockTransactionHash={fairblockTransactionHash}
         transactionHash={transactionHash}
         onDismiss={dismissConfirmation}
         permitSignatureState={permitSignatureState}
@@ -83,6 +87,7 @@ type InnerComponentProps = {
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
+  fairblockTransactionHash?: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
   isSafeWallet: boolean
@@ -101,6 +106,7 @@ function InnerComponent(props: InnerComponentProps) {
     pendingTrade,
     permitSignatureState,
     transactionHash,
+    fairblockTransactionHash,
     order,
     submittedContent,
   } = props
@@ -134,6 +140,7 @@ function InnerComponent(props: InnerComponentProps) {
         isSafeWallet={isSafeWallet}
         onDismiss={onDismiss}
         hash={transactionHash}
+        fairblockTransactionHash={fairblockTransactionHash ?? undefined}
       />
     )
   }

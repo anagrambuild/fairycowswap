@@ -357,7 +357,7 @@ export function OrderRow({
             <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
           </styledEl.CellElement>
           <styledEl.CellElement doubleRow>
-            {isDecrypted ? (
+            {isDecrypted || estimatedDecryptTimeFormatted === 'Decrypted' ? (
               'Decrypted'
             ) : (
               <>

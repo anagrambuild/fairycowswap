@@ -288,6 +288,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       return {
         ...x,
         isEncrypting: true,
+        lastFairychainTxHash: null,
       }
     })
     // BUG(johnrjj) - For some reason, have to also set the store this way to get ui components to react.
@@ -295,6 +296,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       return {
         ...x,
         isEncrypting: true,
+        lastFairychainTxHash: null,
       }
     })
 
@@ -329,6 +331,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       return {
         ...x,
         isEncrypting: false,
+        lastFairychainTxHash: fairychainSubmitResult.fairblockTxHash,
       }
     })
     // BUG(johnrjj) - For some reason, have to also set the store this way to get ui components to react.
@@ -336,6 +339,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       return {
         ...x,
         isEncrypting: false,
+        lastFairychainTxHash: fairychainSubmitResult.fairblockTxHash,
       }
     })
 

@@ -33,6 +33,7 @@ export interface FairblockState {
   readonly targetBlockHeightTyped: string | null
   readonly targetBlockHeightDisplayed: number | null
   readonly isEncrypting: boolean;
+  readonly lastFairychainTxHash: string | null;
 }
 
 export const fairblockOrderStatus = atom((get) => get(fairblockAtom).isEncrypting ? 'encrypting' : null)
@@ -43,6 +44,7 @@ export const initFairblockState = () => ({
   targetBlockHeightDisplayed: null,
   isLoading: false,
   isEncrypting: false,
+  lastFairychainTxHash: null
 })
 
 export const { atom: fairblockAtom, updateAtom: updateFairblockAtom } = atomWithPartialUpdate(

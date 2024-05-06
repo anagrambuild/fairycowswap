@@ -1,6 +1,6 @@
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -35,9 +35,17 @@ export interface OrderSubmittedContentProps {
   isSafeWallet: boolean
   account: string
   hash: string
+  fairblockTransactionHash?: string
 }
 
-export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
+export function OrderSubmittedContent({
+  chainId,
+  account,
+  isSafeWallet,
+  hash,
+  fairblockTransactionHash,
+  onDismiss,
+}: OrderSubmittedContentProps) {
   const tx = {
     hash,
     hashType: isSafeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
@@ -47,13 +55,25 @@ export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, on
     },
   }
 
+  let maybeFairblockTransactionHashHref: string | null = null
+  if (fairblockTransactionHash) {
+    maybeFairblockTransactionHashHref = `https://testnet-explorer.fairblock.network/fairyring/transactions/${fairblockTransactionHash}`
+  }
+
   return (
     <Wrapper>
       <AnimatedConfirmation />
       <Caption>
         <Trans>Timelock Encrypted Limit Order Submitted</Trans>
       </Caption>
-      <EnhancedTransactionLink chainId={chainId} tx={tx} />
+      <EnhancedTransactionLink chainId={chainId} tx={tx} fairblockTransactionHash={fairblockTransactionHash} />
+      {maybeFairblockTransactionHashHref && (
+        <ExternalLink href={maybeFairblockTransactionHashHref}>
+          <>
+            View encrypted limit order transaction on Fairychain <span style={{ fontSize: '0.8em' }}>↗</span>
+          </>
+        </ExternalLink>
+      )}
       <ActionButton onClick={onDismiss}>
         <Trans>Continue</Trans>
       </ActionButton>
