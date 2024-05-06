@@ -227,7 +227,7 @@ export function OrderRow({
   if (curFairyHeightThing.currentBlockHeight && encryptedBlock) {
     const blocksLeftUntilDecryption = encryptedBlock - curFairyHeightThing.currentBlockHeight
     const blockTime = 6 // seconds per block;
-    estimatedDecryptTimeInSeconds = Math.max(blocksLeftUntilDecryption * blockTime, 0)
+    estimatedDecryptTimeInSeconds = Math.floor(Math.max(blocksLeftUntilDecryption * blockTime, 0))
     isDecrypted = curFairyHeightThing.currentBlockHeight > encryptedBlock
   }
   let estimatedDecryptTimeFormatted = 'Decrypted'
