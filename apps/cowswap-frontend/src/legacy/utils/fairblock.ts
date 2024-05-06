@@ -55,7 +55,7 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
     { prefix: 'fairy' }
   )
 
-  const wallet = userProvidedLocalThrowawayWallet
+  const wallet = backupWallet //userProvidedLocalThrowawayWallet
 
   const [firstAccount] = await wallet.getAccounts()
   const address = firstAccount.address
@@ -82,7 +82,6 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
   console.log('Fairyring: balance', fairyringBalance, fairyringBalance?.amount)
 
   if (fairyringBalance?.amount === '0') {
-
     try {
       console.log('Fairyring: no balance, sending some')
       const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
@@ -98,7 +97,6 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
       console.log(e)
       throw new Error('Fairychain faucet rate limited. Try again later.')
     }
-
   }
 
   const signer = await SigningStargateClient.connectWithSigner(FAIRYRING_TESTNET_RPC_URL, offlineSigner)
