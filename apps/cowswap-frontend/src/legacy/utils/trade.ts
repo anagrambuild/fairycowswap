@@ -314,8 +314,9 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       payload,
       unsignedOrder,
       apiContext,
-      70,
-      localFairblockAccount
+      70, // TODO(johnrjj) - Finish plumbing
+      localFairblockAccount,
+      true,
     )
     console.log('fairychainSubmitResult', fairychainSubmitResult)
     const { fairblockTxHash } = fairychainSubmitResult

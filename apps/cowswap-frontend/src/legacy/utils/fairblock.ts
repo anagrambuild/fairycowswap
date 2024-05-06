@@ -18,10 +18,13 @@ export const doEncryptAndSubmitCowswapOrderToFairychain = async (
   unsignedOrder: UnsignedOrder,
   apiContext: Partial<ApiContext> & { chainId: SupportedChainId },
   secondsInFutureToDecrypt: number,
-  wallet: OfflineDirectSigner
+  wallet: OfflineDirectSigner,
+  shouldUseBackupWalletIfFaucetIsDown: boolean
 ) => {
   delete orderPayload.quoteId // KLUDGE(johnrjj) - weird behavior sometimes with quote not found error. safe to remove.
-  const fairblock = await submitMsgToFairychain(JSON.stringify(orderPayload), secondsInFutureToDecrypt, wallet)
+  const fairblock = await submitMsgToFairychain(
+    JSON.stringify(orderPayload), secondsInFutureToDecrypt, wallet, shouldUseBackupWalletIfFaucetIsDown
+  )
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
   const domain = await OrderSigningUtils.getDomain(apiContext.chainId)
@@ -51,7 +54,8 @@ const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBu
 const submitMsgToFairychain = async (
   userMsg: string,
   secondsInFutureToDecrypt: number,
-  userProvidedLocalThrowawayWallet: OfflineDirectSigner
+  userProvidedLocalThrowawayWallet: OfflineDirectSigner,
+  shouldUseBackupWalletIfFaucetIsDown: boolean,
 ) => {
   const backupWallet = await DirectSecp256k1HdWallet.fromMnemonic(
     'enlist hip relief stomach skate base shallow young switch frequent cry park',
