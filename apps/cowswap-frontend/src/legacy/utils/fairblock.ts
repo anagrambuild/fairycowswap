@@ -1,11 +1,5 @@
 /* eslint-disable no-debugger */
-import {
-  ApiContext,
-  OrderCreation,
-  OrderSigningUtils,
-  SupportedChainId,
-  UnsignedOrder,
-} from '@cowprotocol/cow-sdk'
+import { ApiContext, OrderCreation, OrderSigningUtils, SupportedChainId, UnsignedOrder } from '@cowprotocol/cow-sdk'
 
 import { MsgExecuteContractEncodeObject } from '@cosmjs/cosmwasm-stargate'
 import { DirectSecp256k1HdWallet, EncodeObject, OfflineDirectSigner } from '@cosmjs/proto-signing'
@@ -59,9 +53,9 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
   const backupWallet = await DirectSecp256k1HdWallet.fromMnemonic(
     'enlist hip relief stomach skate base shallow young switch frequent cry park',
     { prefix: 'fairy' }
-  );
+  )
 
-  const wallet = userProvidedLocalThrowawayWallet;
+  const wallet = userProvidedLocalThrowawayWallet
 
   const [firstAccount] = await wallet.getAccounts()
   const address = firstAccount.address
@@ -78,7 +72,7 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
       apiURL: FAIRYRING_TESTNET_API_URL,
       rpcURL: FAIRYRING_TESTNET_RPC_URL,
     },
-    wallet,
+    wallet
   )
 
   const fairyringBalanceResponseData = await fairblockClient.CosmosBankV1Beta1.query.queryBalance(address, {
@@ -209,15 +203,33 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
 
   const pubkey = keysharePubkeyResult.data
 
-  const keysharePubKeyForEncryption: string = pubkey?.activePubKey?.publicKey as string
-  // if (
-  //   targetHeightRange?.end &&
-  //   state.targetHeight <= (pubkey?.queuedPubKey?.publicKey ? targetHeightRange.end - 100 : targetHeightRange.end)
-  // ) {
-  //   keysharePubKeyForEncryption = pubkey?.activePubKey?.publicKey as string
-  // } else {
-  //   keysharePubKeyForEncryption = pubkey?.queuedPubKey?.publicKey as string
-  // }
+  let keysharePubKeyForEncryption: string = pubkey?.activePubKey?.publicKey as string
+
+  const fairyringHeight = lastestBlockHeight
+
+  const getTargetHeightRange = () => {
+    if (fairyringHeight && pubkey?.queuedPubKey?.publicKey) {
+      return {
+        start: Number(fairyringHeight) + 1,
+        end: Number(pubkey?.queuedPubKey?.expiry),
+      }
+    }
+    if (fairyringHeight && pubkey?.activePubKey?.publicKey) {
+      return {
+        start: Number(fairyringHeight) + 1,
+        end: Number(pubkey?.activePubKey?.expiry),
+      }
+    }
+  }
+  const targetHeightRange = getTargetHeightRange()
+  if (
+    targetHeightRange?.end &&
+    targetHeight <= (pubkey?.queuedPubKey?.publicKey ? targetHeightRange.end - 100 : targetHeightRange.end)
+  ) {
+    keysharePubKeyForEncryption = pubkey?.activePubKey?.publicKey as string
+  } else {
+    keysharePubKeyForEncryption = pubkey?.queuedPubKey?.publicKey as string
+  }
 
   const encryptedHex = await encryptSignedTx(keysharePubKeyForEncryption, targetHeight, signed)
 

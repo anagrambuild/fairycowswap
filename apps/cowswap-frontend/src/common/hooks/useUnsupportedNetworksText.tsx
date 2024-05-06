@@ -1,5 +1,5 @@
 import { getChainInfo } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/macro'
 
@@ -8,7 +8,8 @@ export function useUnsupportedNetworksText(): JSX.Element {
     <Trans>
       Please connect your wallet to one of our supported networks:
       <br />
-      {ALL_SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label)
+      {/* {ALL_SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label) */}
+      {[SupportedChainId.SEPOLIA].map((chainId) => getChainInfo(chainId)?.label)
         .filter(Boolean)
         .join(', ')}
     </Trans>

@@ -50,7 +50,7 @@ export const cowSwapStore = configureStore({
 })
 
 // this instantiates the app / reducers in several places using the default chainId
-cowSwapStore.dispatch(updateVersion({ chainId: SupportedChainId.MAINNET }))
+cowSwapStore.dispatch(updateVersion({ chainId: SupportedChainId.MAINNET })) // TODO(johnrjj) - Sepolia?
 
 // TODO: this is new, should we enable it?
 // setupListeners(store.dispatch)

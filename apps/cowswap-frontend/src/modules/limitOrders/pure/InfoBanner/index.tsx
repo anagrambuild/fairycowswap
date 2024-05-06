@@ -33,7 +33,7 @@ export function InfoBanner() {
         <SVG src={AlertIcon} />
       </div>
       <div className="content">
-      FairyCoW Swap is a demo of Fairblock's modular programmable encryption added to an existing intent-driven EVM application (CoW Swap). Available on Sepolia. Do not use with real money.{' '}
+      FairyCoW Swap is a demo of Fairblock's modular programmable encryption added to an existing intent-based EVM application (CoW Swap). Available on Sepolia. Do not use with real money.{' '}
         <HashLink target="_blank" to="https://www.fairblock.network/how-it-works">
           Learn more
         </HashLink>

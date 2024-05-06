@@ -9,6 +9,10 @@ export function useIsProviderNetworkUnsupported(): boolean {
   return useMemo(() => {
     if (!chainId) return false
 
-    return !(chainId in SupportedChainId)
+    if (chainId === SupportedChainId.SEPOLIA) {
+      return false;
+    }
+    return true;
+    // return !(chainId in SupportedChainId)
   }, [chainId])
 }
