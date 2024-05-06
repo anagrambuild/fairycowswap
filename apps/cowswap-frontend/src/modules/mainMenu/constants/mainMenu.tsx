@@ -54,29 +54,29 @@ export const ACCOUNT_MENU: InternalLink[] = [
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  // {
-  //   kind: MenuItemKind.DROP_DOWN,
-  //   title: 'Trade',
-  //   items: [
-  //     {
-  //       links: [
-  //         // { id: MainMenuItemId.SWAP, kind: MenuItemKind.PARAMETRIZED_LINK, title: 'Swap', url: Routes.SWAP },
-  //         {
-  //           id: MainMenuItemId.LIMIT_ORDERS,
-  //           kind: MenuItemKind.PARAMETRIZED_LINK,
-  //           title: 'Time Encrypted Limit',
-  //           url: Routes.LIMIT_ORDER,
-  //         },
-  //         // {
-  //         //   id: MainMenuItemId.ADVANCED_ORDERS,
-  //         //   kind: MenuItemKind.PARAMETRIZED_LINK,
-  //         //   title: 'TWAP',
-  //         //   url: Routes.ADVANCED_ORDERS,
-  //         // },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    kind: MenuItemKind.DROP_DOWN,
+    title: 'Trade',
+    items: [
+      {
+        links: [
+          // { id: MainMenuItemId.SWAP, kind: MenuItemKind.PARAMETRIZED_LINK, title: 'Swap', url: Routes.SWAP },
+          {
+            id: MainMenuItemId.LIMIT_ORDERS,
+            kind: MenuItemKind.PARAMETRIZED_LINK,
+            title: 'Time Encrypted Limit',
+            url: Routes.LIMIT_ORDER,
+          },
+          // {
+          //   id: MainMenuItemId.ADVANCED_ORDERS,
+          //   kind: MenuItemKind.PARAMETRIZED_LINK,
+          //   title: 'TWAP',
+          //   url: Routes.ADVANCED_ORDERS,
+          // },
+        ],
+      },
+    ],
+  },
   // {
   //   kind: MenuItemKind.DROP_DOWN,
   //   title: 'Account',

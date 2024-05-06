@@ -38,6 +38,7 @@ import {
   tableItemsToOrders,
 } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
+import { EncryptTooltipHeader } from 'common/pure/OrderExecutionStatusList/RateTooltipHeader'
 
 // TODO: move elements to styled.jsx
 
@@ -371,7 +372,7 @@ export function OrdersTable({
                     <span>
                       <span>Encryption</span>
 
-                      <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab />} />
+                      <QuestionHelper text={<EncryptTooltipHeader isOpenOrdersTab />} />
                     </span>
                   </Trans>
                   <i>

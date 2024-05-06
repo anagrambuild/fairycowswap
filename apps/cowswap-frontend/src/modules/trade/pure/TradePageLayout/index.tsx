@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   width: 100%;
   display: grid;
-  max-width: 1500px;
+  max-width: 1600px;
   margin: 0 auto;
   grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
   grid-template-rows: max-content;
