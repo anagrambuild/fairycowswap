@@ -5,13 +5,15 @@ import { Trans } from '@lingui/macro'
 
 export function useUnsupportedNetworksText(): JSX.Element {
   return (
-    <Trans>
+    // <Trans>
+    <>
       Please connect your wallet to one of our supported networks:
       <br />
       {/* {ALL_SUPPORTED_CHAIN_IDS.map((chainId) => getChainInfo(chainId)?.label) */}
       {[SupportedChainId.SEPOLIA].map((chainId) => getChainInfo(chainId)?.label)
         .filter(Boolean)
         .join(', ')}
-    </Trans>
+        </>
+    // </Trans>
   )
 }
