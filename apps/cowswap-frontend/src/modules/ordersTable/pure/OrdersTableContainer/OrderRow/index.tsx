@@ -221,6 +221,26 @@ export function OrderRow({
 
   const curFairyHeightThing = useAtomValue(fairblockAtom)
 
+  let isDecrypted: boolean | undefined = undefined
+  let estimatedDecryptTimeInSeconds: number | undefined = undefined
+  // let estimatedDecryptTimeInSeconds =
+  if (curFairyHeightThing.currentBlockHeight && encryptedBlock) {
+    const blocksLeftUntilDecryption = encryptedBlock - curFairyHeightThing.currentBlockHeight
+    const blockTime = 6 // seconds per block;
+    estimatedDecryptTimeInSeconds = Math.max(blocksLeftUntilDecryption * blockTime, 0)
+    isDecrypted = curFairyHeightThing.currentBlockHeight > encryptedBlock
+  }
+  let estimatedDecryptTimeFormatted = 'Decrypted'
+  if (estimatedDecryptTimeInSeconds) {
+    if (estimatedDecryptTimeInSeconds < 60) {
+      estimatedDecryptTimeFormatted = `${estimatedDecryptTimeInSeconds} seconds`
+    } else if (estimatedDecryptTimeInSeconds < 3600) {
+      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 60)} minutes`
+    } else {
+      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 3600)} hours`
+    }
+  }
+
   return (
     <TableRow
       data-id={order.id}
@@ -334,8 +354,14 @@ export function OrderRow({
             <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
           </styledEl.CellElement>
           <styledEl.CellElement doubleRow>
-            <b>{curFairyHeightThing.currentBlockHeight}</b>
-            <i>{isScheduledCreating ? 'Creating...' : encryptedBlock}</i>
+            {isDecrypted ? (
+              'Decrypted'
+            ) : (
+              <>
+                <b>Encrypted</b>
+                <i>{estimatedDecryptTimeFormatted}</i>
+              </>
+            )}
           </styledEl.CellElement>
         </>
       )}

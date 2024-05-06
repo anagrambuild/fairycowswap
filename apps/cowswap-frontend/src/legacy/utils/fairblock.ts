@@ -82,16 +82,23 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
   console.log('Fairyring: balance', fairyringBalance, fairyringBalance?.amount)
 
   if (fairyringBalance?.amount === '0') {
-    console.log('Fairyring: no balance, sending some')
-    const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
-    const faucetJson = await faucetReq.json()
 
-    if (faucetJson.result === 'You requested too often') {
-      console.log(faucetJson)
+    try {
+      console.log('Fairyring: no balance, sending some')
+      const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
+      const faucetJson = await faucetReq.json()
+  
+      if (faucetJson.result === 'You requested too often') {
+        console.log(faucetJson)
+        throw new Error('Fairychain faucet rate limited. Try again later.')
+      }
+      const maybeFaucetTx = faucetJson?.result?.txHash
+      console.log(`Faucet tx: ${maybeFaucetTx}`)
+    } catch (e) {
+      console.log(e)
       throw new Error('Fairychain faucet rate limited. Try again later.')
     }
-    const maybeFaucetTx = faucetJson?.result?.txHash
-    console.log(`Faucet tx: ${maybeFaucetTx}`)
+
   }
 
   const signer = await SigningStargateClient.connectWithSigner(FAIRYRING_TESTNET_RPC_URL, offlineSigner)
@@ -220,6 +227,7 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
         end: Number(pubkey?.activePubKey?.expiry),
       }
     }
+    return undefined;
   }
   const targetHeightRange = getTargetHeightRange()
   if (
