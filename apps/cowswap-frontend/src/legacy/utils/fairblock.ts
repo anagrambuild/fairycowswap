@@ -19,10 +19,11 @@ export const doEncryptAndSubmitCowswapOrderToFairychain = async (
   orderPayload: OrderCreation,
   unsignedOrder: UnsignedOrder,
   apiContext: Partial<ApiContext> & { chainId: SupportedChainId },
+  secondsInFutureToDecrypt: number,
   wallet: OfflineDirectSigner
 ) => {
   delete orderPayload.quoteId // KLUDGE(johnrjj) - weird behavior sometimes with quote not found error. safe to remove.
-  const fairblock = await submitMsgToFairychain(JSON.stringify(orderPayload), wallet)
+  const fairblock = await submitMsgToFairychain(JSON.stringify(orderPayload), secondsInFutureToDecrypt, wallet)
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
   const domain = await OrderSigningUtils.getDomain(apiContext.chainId)
@@ -49,7 +50,11 @@ const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBu
   return await timelockEncrypt(targetHeight.toString(), pubKeyHex, signedBuf)
 }
 
-const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowawayWallet: OfflineDirectSigner) => {
+const submitMsgToFairychain = async (
+  userMsg: string,
+  secondsInFutureToDecrypt: number,
+  userProvidedLocalThrowawayWallet: OfflineDirectSigner
+) => {
   const backupWallet = await DirectSecp256k1HdWallet.fromMnemonic(
     'enlist hip relief stomach skate base shallow young switch frequent cry park',
     { prefix: 'fairy' }
@@ -86,7 +91,7 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
       console.log('Fairyring: no balance, sending some')
       const faucetReq = await fetch(`https://testnet-faucet.fairblock.network/send/${address}/ufairy`)
       const faucetJson = await faucetReq.json()
-  
+
       if (faucetJson.result === 'You requested too often') {
         console.log(faucetJson)
         throw new Error('Fairychain faucet rate limited. Try again later.')
@@ -205,11 +210,11 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
   const latestHeightResult = await fairblockClient.FairyringPep.query.queryLatestHeight({})
   const lastestBlockHeight = latestHeightResult.data.height
 
-  const BLOCK_TIME_IN_SECONDS = 5.5;
+  const BLOCK_TIME_IN_SECONDS = 5.5
 
-  const DESIRED_TIME_IN_SECONDS = 60;
+  const DESIRED_TIME_IN_SECONDS = secondsInFutureToDecrypt
 
-  const targetHeight = parseInt(lastestBlockHeight!, 10) + Math.floor((DESIRED_TIME_IN_SECONDS / BLOCK_TIME_IN_SECONDS))
+  const targetHeight = parseInt(lastestBlockHeight!, 10) + Math.floor(DESIRED_TIME_IN_SECONDS / BLOCK_TIME_IN_SECONDS)
 
   const pubkey = keysharePubkeyResult.data
 
@@ -230,7 +235,7 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
         end: Number(pubkey?.activePubKey?.expiry),
       }
     }
-    return undefined;
+    return undefined
   }
   const targetHeightRange = getTargetHeightRange()
   if (
