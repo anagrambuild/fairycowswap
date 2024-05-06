@@ -206,7 +206,12 @@ const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowaway
   const keysharePubkeyResult = await fairblockClient.FairyringKeyshare.query.queryPubKey({})
   const latestHeightResult = await fairblockClient.FairyringPep.query.queryLatestHeight({})
   const lastestBlockHeight = latestHeightResult.data.height
-  const targetHeight = parseInt(lastestBlockHeight!, 10) + 10
+
+  const BLOCK_TIME_IN_SECONDS = 5.5;
+
+  const DESIRED_TIME_IN_SECONDS = 60;
+
+  const targetHeight = parseInt(lastestBlockHeight!, 10) + Math.floor((DESIRED_TIME_IN_SECONDS / BLOCK_TIME_IN_SECONDS))
 
   const pubkey = keysharePubkeyResult.data
 

@@ -13,7 +13,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   gap: 14px;
   grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
     `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) 3fr' : '3.2fr'} repeat(2,2fr) ${
-      isOpenOrdersTab ? '2.5fr 1.4fr 2fr' : ''
+      isOpenOrdersTab ? '2.2fr 1.4fr 1.5fr' : ''
     } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
