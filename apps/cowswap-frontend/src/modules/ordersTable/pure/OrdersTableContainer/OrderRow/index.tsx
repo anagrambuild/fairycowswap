@@ -223,8 +223,10 @@ export function OrderRow({
 
   let isDecrypted: boolean | undefined = undefined
   let estimatedDecryptTimeInSeconds: number | undefined = undefined
-  // let estimatedDecryptTimeInSeconds =
-  if (curFairyHeightThing.currentBlockHeight && encryptedBlock) {
+  if (!encryptedBlock) {
+    isDecrypted = true;
+  }
+  if (curFairyHeightThing.currentBlockHeight !== null && encryptedBlock) {
     const blocksLeftUntilDecryption = encryptedBlock - curFairyHeightThing.currentBlockHeight
     const blockTime = 6 // seconds per block;
     estimatedDecryptTimeInSeconds = Math.floor(Math.max(blocksLeftUntilDecryption * blockTime, 0))
