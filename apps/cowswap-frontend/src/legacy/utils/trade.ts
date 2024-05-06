@@ -306,7 +306,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     })
 
     // Submit locally, CowSwap order never leaves your client
-    const fairychainSubmitResult = await doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, 60, localFairblockAccount)
+    const fairychainSubmitResult = await doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, 70, localFairblockAccount)
     console.log('fairychainSubmitResult', fairychainSubmitResult)
     const { fairblockTxHash, status } = fairychainSubmitResult
 

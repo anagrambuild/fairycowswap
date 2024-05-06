@@ -235,7 +235,8 @@ export function OrderRow({
     if (estimatedDecryptTimeInSeconds < 60) {
       estimatedDecryptTimeFormatted = `${estimatedDecryptTimeInSeconds} seconds`
     } else if (estimatedDecryptTimeInSeconds < 3600) {
-      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 60)} minutes`
+      const mins = Math.floor(estimatedDecryptTimeInSeconds / 60)
+      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 60)} ${mins === 1 ? 'min' : 'mins'}`
     } else {
       estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 3600)} hours`
     }
