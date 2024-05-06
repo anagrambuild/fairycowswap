@@ -65,7 +65,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       &nbsp;& Limit order)
     </>
   ) : (
-    'Place limit order'
+    'Place timelock encrypted limit order'
   )
 
   return (

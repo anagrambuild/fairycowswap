@@ -115,19 +115,19 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
         </div>
       </styledEl.DetailsRow>
-      {/* <styledEl.DetailsRow>
+      <styledEl.DetailsRow>
         <div>
-          <span>Protection from MEV</span>
+          <span>Timelock Encryption</span>
           <InfoIcon
             content={
-              'On CoW Swap, your limit orders - just like market orders - are protected from MEV by default! So there’s no need to worry about MEV attacks like frontrunning or sandwiching.'
+              'On FairyCoW Swap, your limit orders are timelocked encrypted. Specify the time you want them a limit order to securely autonomously decrypt and become public (or how long you want them to be encrypted for) and let Fairbock do the rest of the work.'
             }
           />
         </div>
         <div>
           <span>Active</span>
         </div>
-      </styledEl.DetailsRow> */}
+      </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
     </Wrapper>

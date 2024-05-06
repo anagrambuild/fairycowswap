@@ -34,6 +34,7 @@ export interface TocItem {
 }
 
 export function Footer() {
+
   return (
     <FooterWrapper>
       <p>

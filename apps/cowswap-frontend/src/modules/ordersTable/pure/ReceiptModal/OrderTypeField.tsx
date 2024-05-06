@@ -11,7 +11,7 @@ export type Props = {
 
 const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
   [UiOrderType.SWAP]: 'Market',
-  [UiOrderType.LIMIT]: 'Limit',
+  [UiOrderType.LIMIT]: 'Time Encrypted Limit',
   [UiOrderType.TWAP]: 'TWAP',
 }
 

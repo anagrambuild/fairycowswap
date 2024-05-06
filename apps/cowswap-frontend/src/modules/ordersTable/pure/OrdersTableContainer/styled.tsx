@@ -13,7 +13,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   gap: 14px;
   grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
     `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) 3fr' : '3.2fr'} repeat(2,2fr) ${
-      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
+      isOpenOrdersTab ? '2.2fr 1.4fr 1.5fr' : ''
     } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
@@ -25,7 +25,7 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   grid-template-columns: ${`${
     isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
   } repeat(2,minmax(110px,2fr)) ${
-    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr) minmax(140px,2.2fr)' : ''
   } minmax(50px,1fr) 108px 24px`};
   `}
 

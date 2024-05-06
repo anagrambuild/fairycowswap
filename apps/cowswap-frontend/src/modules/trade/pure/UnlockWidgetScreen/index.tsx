@@ -6,6 +6,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
+import { ReactNode } from 'react'
 
 export type BulletListItem = {
   content: string | React.ReactNode
@@ -16,7 +17,7 @@ type UnlockWidgetProps = {
   id: string
   items: BulletListItem[]
   handleUnlock: Command
-  title: string
+  title: string | ReactNode
   subtitle: string
   buttonLink?: string
   orderType: string

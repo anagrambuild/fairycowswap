@@ -51,7 +51,7 @@ export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, on
     <Wrapper>
       <AnimatedConfirmation />
       <Caption>
-        <Trans>Order Submitted</Trans>
+        <Trans>Timelock Encrypted Limit Order Submitted</Trans>
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
       <ActionButton onClick={onDismiss}>

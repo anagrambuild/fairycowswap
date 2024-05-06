@@ -6,6 +6,7 @@ const defaultProps: SettingsProps = {
     partialFillsEnabled: true,
     deadlineMilliseconds: 200_000,
     customDeadlineTimestamp: null,
+    decryptTimeMilliseconds: 1_000 * 1_000 * 60 // 1 minute
   },
   onStateChanged(state) {
     console.log('Settings state changed: ', state)

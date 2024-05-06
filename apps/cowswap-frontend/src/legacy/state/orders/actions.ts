@@ -36,7 +36,7 @@ export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CR
 //  - Derived/additional information that is handy for this app
 // Doesn't have input/output tokens, these are declared in the subtypes of this base type
 // includes sellAmountBeforeFee as this is required for checking unfillable orders
-export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
+export interface BaseOrder extends OrderCreation {
   id: UID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
@@ -49,6 +49,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
+  encryptedBlock?: number // Block number when the order will decrypt
 
   // EthFlow
   orderCreationHash?: string
@@ -113,6 +114,7 @@ export type OrderInfoApi = Pick<
   | 'onchainOrderData'
   | 'class'
   | 'fullAppData'
+  | 'signingScheme'
 >
 
 /**
@@ -137,6 +139,7 @@ export interface AddPendingOrderParams {
   chainId: ChainId
   order: SerializedOrder
   isSafeWallet: boolean
+  encryptedBlock?: number
 }
 export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }

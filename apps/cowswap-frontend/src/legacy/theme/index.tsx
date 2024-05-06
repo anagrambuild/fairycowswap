@@ -175,7 +175,7 @@ export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): Default
 }
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
-  const darkMode = useIsDarkMode()
+  const darkMode = true //useIsDarkMode()
   const injectedWidgetTheme = useInjectedWidgetPalette()
 
   const themeObject = useMemo(() => {

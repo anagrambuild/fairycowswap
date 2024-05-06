@@ -7,7 +7,7 @@ const chainNameToIdMap: { [key: string]: SupportedChainId } = {
 }
 
 export function getCurrentChainIdFromUrl(): SupportedChainId {
-  return getRawCurrentChainIdFromUrl() || SupportedChainId.MAINNET
+  return getRawCurrentChainIdFromUrl() || SupportedChainId.SEPOLIA
 }
 
 export function getRawCurrentChainIdFromUrl(): SupportedChainId | null {

@@ -21,7 +21,7 @@ import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
-const CONFIRM_TEXT = 'Review limit order'
+const CONFIRM_TEXT = 'Review time encrypted limit order'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
