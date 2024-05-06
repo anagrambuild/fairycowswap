@@ -5,18 +5,20 @@ import { getWeb3ReactConnection } from './getWeb3ReactConnection'
 
 import { ConnectionType } from '../../api/types'
 
+const ONLY_SEPOLIA = [SupportedChainId.SEPOLIA]
+
 const allowedChainsByWallet: Record<ConnectionType, SupportedChainId[]> = {
-  [ConnectionType.INJECTED]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.INJECTED_WIDGET]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.COINBASE_WALLET]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.WALLET_CONNECT_V2]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.NETWORK]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.GNOSIS_SAFE]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.TALLY]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.TRUST]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.INJECTED]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.INJECTED_WIDGET]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.COINBASE_WALLET]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.WALLET_CONNECT_V2]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.NETWORK]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.GNOSIS_SAFE]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TALLY]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TRUST]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
   // [ConnectionType.LEDGER]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.TREZOR]: ALL_SUPPORTED_CHAIN_IDS,
-  [ConnectionType.KEYSTONE]: ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.TREZOR]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
+  [ConnectionType.KEYSTONE]: ONLY_SEPOLIA, //ALL_SUPPORTED_CHAIN_IDS,
   [ConnectionType.ALPHA]: [],
   [ConnectionType.AMBIRE]: [],
   [ConnectionType.ZENGO]: [],

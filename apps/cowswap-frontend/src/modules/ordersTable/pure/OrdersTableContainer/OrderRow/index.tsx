@@ -7,7 +7,7 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenSymbol, UI, ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -36,6 +36,8 @@ import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
 import { OrderActions } from '../types'
+import { useAtomValue } from 'jotai'
+import { fairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
 
@@ -144,10 +146,12 @@ export interface OrderRowProps {
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
+  encryptedBlock?: number
 }
 
 export function OrderRow({
   order,
+  encryptedBlock,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
@@ -170,10 +174,10 @@ export function OrderRow({
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
-
-  const showRecreateModal = useMemo(() => {
-    return orderActions.getShowRecreateModal(order)
-  }, [orderActions, order])
+  const alternativeOrderModalContext = useMemo(
+    () => orderActions.getAlternativeOrderModalContext(order),
+    [order, orderActions]
+  )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -214,6 +218,29 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
+
+  const curFairyHeightThing = useAtomValue(fairblockAtom)
+
+  let isDecrypted: boolean | undefined = undefined
+  let estimatedDecryptTimeInSeconds: number | undefined = undefined
+  // let estimatedDecryptTimeInSeconds =
+  if (curFairyHeightThing.currentBlockHeight && encryptedBlock) {
+    const blocksLeftUntilDecryption = encryptedBlock - curFairyHeightThing.currentBlockHeight
+    const blockTime = 6 // seconds per block;
+    estimatedDecryptTimeInSeconds = Math.floor(Math.max(blocksLeftUntilDecryption * blockTime, 0))
+    isDecrypted = curFairyHeightThing.currentBlockHeight > encryptedBlock
+  }
+  let estimatedDecryptTimeFormatted = 'Decrypted'
+  if (estimatedDecryptTimeInSeconds) {
+    if (estimatedDecryptTimeInSeconds < 60) {
+      estimatedDecryptTimeFormatted = `${estimatedDecryptTimeInSeconds} seconds`
+    } else if (estimatedDecryptTimeInSeconds < 3600) {
+      const mins = Math.floor(estimatedDecryptTimeInSeconds / 60)
+      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 60)} ${mins === 1 ? 'min' : 'mins'}`
+    } else {
+      estimatedDecryptTimeFormatted = `${Math.floor(estimatedDecryptTimeInSeconds / 3600)} hours`
+    }
+  }
 
   return (
     <TableRow
@@ -322,10 +349,22 @@ export function OrderRow({
       {/* Expires */}
       {/* Created */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement doubleRow>
-          <b>{expirationTimeAgo}</b>
-          <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
-        </styledEl.CellElement>
+        <>
+          <styledEl.CellElement doubleRow>
+            <b>{expirationTimeAgo}</b>
+            <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+          </styledEl.CellElement>
+          <styledEl.CellElement doubleRow>
+            {isDecrypted ? (
+              'Decrypted'
+            ) : (
+              <>
+                <b>Encrypted</b>
+                <i>{estimatedDecryptTimeFormatted}</i>
+              </>
+            )}
+          </styledEl.CellElement>
+        </>
       )}
 
       {/* TODO: Enable once there is back-end support */}
@@ -384,7 +423,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          showRecreateModal={showRecreateModal}
+          alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>
     </TableRow>

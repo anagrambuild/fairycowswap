@@ -6,7 +6,7 @@ import { Loader } from '@cowprotocol/ui'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
+import { RedirectPathToLimitOnly, RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
@@ -83,7 +83,7 @@ export function RoutesApp() {
 
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-        <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+        <Route path={RoutesEnum.SEND} element={<RedirectPathToLimitOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 
@@ -92,7 +92,7 @@ export function RoutesApp() {
         <Route path={RoutesEnum.DOCS} loader={createRedirectExternal(DOCS_LINK)} />
         <Route path={RoutesEnum.STATS} loader={createRedirectExternal(DUNE_DASHBOARD_LINK)} />
         <Route path={RoutesEnum.TWITTER} loader={createRedirectExternal(TWITTER_LINK)} />
-        <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
+        <Route path={RoutesEnum.HOME} element={<RedirectPathToLimitOnly />} />
         <Route
           path="*"
           element={

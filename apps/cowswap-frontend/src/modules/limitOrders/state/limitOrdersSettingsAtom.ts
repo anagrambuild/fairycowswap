@@ -11,11 +11,13 @@ import {
   alternativeOrderAtomSetterFactory,
   alternativeOrderReadWriteAtomFactory,
 } from 'modules/trade/state/alternativeOrder'
+import { defaultLimitOrderDecryptTime, limitOrdersDecryptTimes } from '../pure/DecryptTimeSelector/deadlines'
 
 export interface LimitOrdersSettingsState {
   readonly showRecipient: boolean
   readonly partialFillsEnabled: boolean
   readonly deadlineMilliseconds: Milliseconds
+  readonly decryptTimeMilliseconds: Milliseconds // x milliseconds in future
   readonly customDeadlineTimestamp: Timestamp | null
 }
 
@@ -23,12 +25,13 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   showRecipient: false,
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
+  decryptTimeMilliseconds: defaultLimitOrderDecryptTime.value,
   customDeadlineTimestamp: null,
 }
 
 // regular
 const regularLimitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
-  'limit-orders-settings-atom:v2',
+  'limit-orders-settings-atom:v2b',
   defaultLimitOrdersSettings,
   getJotaiIsolatedStorage()
 )

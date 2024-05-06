@@ -12,7 +12,8 @@ import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { upToLarge, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { cowSwapLogo, winterThemeHat } from 'legacy/theme/cowSwapAssets'
+import { winterThemeHat } from 'legacy/theme/cowSwapAssets'
+import FairyCowSwapLogo from 'assets/logo/fcswap.svg'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
@@ -103,7 +104,15 @@ export default function Header() {
                   {injectedWidgetParams.logoUrl ? (
                     <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
                   ) : (
-                    <SVG src={cowSwapLogo(darkMode)} />
+                    <>
+                      <CustomLogoImg
+                        style={{
+                          height: 64,
+                        }}
+                        src={FairyCowSwapLogo}
+                        alt="Logo"
+                      />
+                    </>
                   )}
                 </LogoImage>
 

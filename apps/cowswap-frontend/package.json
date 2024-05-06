@@ -4,6 +4,7 @@
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
+  "type": "module",
   "license": "ISC",
   "scripts": {
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
@@ -12,7 +13,17 @@
     "cosmos:clear": "rm -rf ./public/cosmos",
     "cosmos:run": "yarn run _cosmos:run",
     "build:cosmos": "cross-env NODE_ENV=development npx cosmos-export",
-    "_cosmos:run": "yarn cosmos:clear && npx cosmos"
+    "_cosmos:run": "yarn cosmos:clear && npx cosmos",
+    "test:fairblock": "nodemon src/fairblock/index.ts"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "ts": "ts-node"
+    },
+    "ext": "ts",
+    "watch": [
+      "src"
+    ]
   },
   "browser": {
     "crypto": false
@@ -29,7 +40,9 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "nx": {}
+  "dependencies": {
+    "ts-ibe": "^1.1.0"
+  },
+  "nx": {},
+  "devDependencies": {}
 }

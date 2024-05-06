@@ -48,7 +48,7 @@ export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 export const PRODUCTION_URL = 'swap.cow.fi'
 export const BARN_URL = `barn.cow.fi`
 
-export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
+export const APP_TITLE = 'FairyCoW Swap | Timelock encrypted limit orders powered by Fairblock'
 
 type Env = 'barn' | 'prod'
 

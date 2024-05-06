@@ -18,6 +18,7 @@ import { CowModal as Modal } from 'common/pure/Modal'
 
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'
+import { Toggle } from 'legacy/components/Toggle'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',

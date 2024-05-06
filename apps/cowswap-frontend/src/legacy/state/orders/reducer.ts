@@ -174,14 +174,15 @@ function addOrderToState(
   id: string,
   status: OrderTypeKeys,
   order: SerializedOrder,
-  isSafeWallet: boolean
+  isSafeWallet: boolean,
+  encryptedBlock?: number
 ): void {
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png
   // by creating a new object instead of trying to edit the existing one
   // Seems to be due to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
   // but only happened on Chrome
-  state[chainId][status] = { ...state[chainId][status], [id]: { order, id, isSafeWallet } }
+  state[chainId][status] = { ...state[chainId][status], [id]: { order, id, isSafeWallet, encryptedBlock } as any }
 }
 
 function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id: string): OrderObject | undefined {
@@ -237,7 +238,7 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(addPendingOrder, (state, action) => {
       prefillState(state, action)
-      const { order, id, chainId, isSafeWallet } = action.payload
+      const { order, id, chainId, isSafeWallet, encryptedBlock } = action.payload
 
       order.openSince = CREATING_STATES.includes(order.status) ? undefined : Date.now()
 
@@ -245,11 +246,11 @@ export default createReducer(initialState, (builder) =>
         // EthFlow or PreSign orders have their respective buckets
         case OrderStatus.CREATING: // ethflow orders
         case OrderStatus.PRESIGNATURE_PENDING: // pre-sign orders
-          addOrderToState(state, chainId, id, order.status, order, isSafeWallet)
+          addOrderToState(state, chainId, id, order.status, order, isSafeWallet, encryptedBlock)
           break
         default:
           // Regular orders go into the pending bucket
-          addOrderToState(state, chainId, id, 'pending', order, isSafeWallet)
+          addOrderToState(state, chainId, id, 'pending', order, isSafeWallet, encryptedBlock)
       }
     })
     .addCase(preSignOrders, (state, action) => {
@@ -325,6 +326,8 @@ export default createReducer(initialState, (builder) =>
               isCancelling: isCancelling,
               class: orderObj.order.class || newOrder.class, // should never replace existing order class
               openSince: newOrder.openSince || orderObj.order.openSince,
+              // Necessary since `signingScheme` was added later, and local redux state prior to this change doesn't have it set
+              signingScheme: newOrder.signingScheme || orderObj.order.signingScheme,
               status,
             }
           : { ...newOrder, validTo }
@@ -377,6 +380,7 @@ export default createReducer(initialState, (builder) =>
             onchainOrderData: order.onchainOrderData,
             class: order.class,
             fullAppData: order.fullAppData,
+            signingScheme: order.signingScheme,
           }
 
           addOrderToState(state, chainId, uid, 'fulfilled', orderObject.order, isSafeWallet)
