@@ -267,6 +267,12 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
       })
       localFairblockAccount = newFairblockWallet
       const mnemonic = newFairblockWallet.mnemonic
+      fairblockStore.set(fairblockLocalAccountAtom, (x) => {
+        return {
+          ...x,
+          pkm: mnemonic,
+        }
+      });
       jotaiStore.set(fairblockLocalAccountAtom, (x) => {
         return {
           ...x,
@@ -278,6 +284,12 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     }
 
     fairblockStore.set(fairblockAtom, (x) => {
+      return {
+        ...x,
+        isEncrypting: true,
+      }
+    })
+    jotaiStore.set(fairblockAtom, (x) => {
       return {
         ...x,
         isEncrypting: true,
@@ -295,6 +307,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     // Submit locally, CowSwap order never leaves your client
     const fairychainSubmitResult = await doEncryptAndSubmitCowswapOrderToFairychain(payload, unsignedOrder, apiContext, localFairblockAccount)
+    console.log('fairychainSubmitResult', fairychainSubmitResult)
     const { fairblockTxHash, status } = fairychainSubmitResult
 
     console.log('fairblockTxHash', fairblockTxHash, status);
@@ -309,12 +322,19 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
         isEncrypting: false,
       }
     })
+    fairblockStore.set(fairblockAtom, (x) => {
+      return {
+        ...x,
+        isEncrypting: false,
+      }
+    })
 
     return {
       chainId,
       id: orderId,
       order: pendingOrderParams,
       isSafeWallet,
+      encryptedBlock: fairychainSubmitResult.revealBlock,
     }
   })
 }

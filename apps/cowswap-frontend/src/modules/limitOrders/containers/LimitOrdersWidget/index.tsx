@@ -49,10 +49,10 @@ export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
 ]
 
 const UNLOCK_SCREEN = {
-  title: 'Want to try out time-locked encrypted limit orders?',
+  title: (<span>Want to try out time-locked <br/>encrypted limit orders?</span>),
   subtitle: 'Get started!',
   orderType: 'partially fillable',
-  buttonText: 'Get started with time encrypted limit orders',
+  buttonText: 'Try out Time-Locked Encrypted Limit Orders',
   buttonLink:
     'https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d',
 }

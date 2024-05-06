@@ -36,6 +36,8 @@ import { OrderParams } from '../../../utils/getOrderParams'
 import { OrderStatusBox } from '../../OrderStatusBox'
 import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
 import { OrderActions } from '../types'
+import { useAtomValue } from 'jotai'
+import { fairblockAtom } from 'modules/limitOrders/state/fairblockAtom'
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
 
@@ -144,7 +146,7 @@ export interface OrderRowProps {
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element
-  encryptedBlock?: number;
+  encryptedBlock?: number
 }
 
 export function OrderRow({
@@ -216,6 +218,8 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
+
+  const curFairyHeightThing = useAtomValue(fairblockAtom)
 
   return (
     <TableRow
@@ -324,10 +328,16 @@ export function OrderRow({
       {/* Expires */}
       {/* Created */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement doubleRow>
-          <b>{expirationTimeAgo}</b>
-          <i>{isScheduledCreating ? 'Creating...' : encryptedBlock ? 'Timelock Encrypted' : creationTimeAgo}</i>
-        </styledEl.CellElement>
+        <>
+          <styledEl.CellElement doubleRow>
+            <b>{expirationTimeAgo}</b>
+            <i>{isScheduledCreating ? 'Creating...' : creationTimeAgo}</i>
+          </styledEl.CellElement>
+          <styledEl.CellElement doubleRow>
+            <b>{curFairyHeightThing.currentBlockHeight}</b>
+            <i>{isScheduledCreating ? 'Creating...' : encryptedBlock}</i>
+          </styledEl.CellElement>
+        </>
       )}
 
       {/* TODO: Enable once there is back-end support */}

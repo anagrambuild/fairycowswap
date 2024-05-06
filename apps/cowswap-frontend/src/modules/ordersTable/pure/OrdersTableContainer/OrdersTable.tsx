@@ -358,12 +358,27 @@ export function OrdersTable({
             )}
 
             {isOpenOrdersTab && (
-              <HeaderElement doubleRow>
-                <Trans>Expiration</Trans>
-                <i>
-                  <Trans>Creation</Trans>
-                </i>
-              </HeaderElement>
+              <>
+                <HeaderElement doubleRow>
+                  <Trans>Expiration</Trans>
+                  <i>
+                    <Trans>Creation</Trans>
+                  </i>
+                </HeaderElement>
+                <HeaderElement doubleRow>
+                  <Trans>
+                    {' '}
+                    <span>
+                      <span>Encryption</span>
+
+                      <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab />} />
+                    </span>
+                  </Trans>
+                  <i>
+                    <Trans>Decrypt Time</Trans>
+                  </i>
+                </HeaderElement>
+              </>
             )}
 
             {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
@@ -417,7 +432,7 @@ export function OrdersTable({
 
                 return (
                   <OrderRow
-                  encryptedBlock={(item as any).encryptedBlock}
+                    encryptedBlock={(item as any).encryptedBlock}
                     key={order.id}
                     isRowSelectable={isRowSelectable}
                     isRowSelected={!!selectedOrdersMap[order.id]}

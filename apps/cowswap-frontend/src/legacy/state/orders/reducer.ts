@@ -175,7 +175,7 @@ function addOrderToState(
   status: OrderTypeKeys,
   order: SerializedOrder,
   isSafeWallet: boolean,
-  encryptedBlock: number = 0
+  encryptedBlock?: number
 ): void {
   // Attempt to fix `TypeError: Cannot add property <x>, object is not extensible`
   // seen on https://user-images.githubusercontent.com/34510341/138450105-bb94a2d1-656e-4e15-ae99-df9fb33c8ca4.png

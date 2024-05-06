@@ -43,6 +43,9 @@ export const doEncryptAndSubmitCowswapOrderToFairychain = async (
     status: 'OK',
     fairblock,
     fairblockTxHash: fairblock.txHash,
+    currentBlock: fairblock.currentBlock,
+    targetBlock: fairblock.targetBlock,
+    revealBlock: fairblock.targetBlock + 2,
     encrypted: true,
     orderId: precomputedOrderId,
   }
@@ -52,11 +55,14 @@ const encryptSignedTx = async (pubKeyHex: string, targetHeight: number, signedBu
   return await timelockEncrypt(targetHeight.toString(), pubKeyHex, signedBuf)
 }
 
-const submitMsgToFairychain = async (userMsg: string, _wallet: OfflineDirectSigner) => {
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+const submitMsgToFairychain = async (userMsg: string, userProvidedLocalThrowawayWallet: OfflineDirectSigner) => {
+  const backupWallet = await DirectSecp256k1HdWallet.fromMnemonic(
     'enlist hip relief stomach skate base shallow young switch frequent cry park',
     { prefix: 'fairy' }
   );
+
+  const wallet = userProvidedLocalThrowawayWallet;
+
   const [firstAccount] = await wallet.getAccounts()
   const address = firstAccount.address
 
@@ -88,7 +94,7 @@ const submitMsgToFairychain = async (userMsg: string, _wallet: OfflineDirectSign
 
     if (faucetJson.result === 'You requested too often') {
       console.log(faucetJson)
-      throw new Error('Faucet disperse error')
+      throw new Error('Fairychain faucet rate limited. Try again later.')
     }
     const maybeFaucetTx = faucetJson?.result?.txHash
     console.log(`Faucet tx: ${maybeFaucetTx}`)
